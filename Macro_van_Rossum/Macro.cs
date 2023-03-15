@@ -26,26 +26,22 @@ namespace Macro_van_Rossum
             // ReloadListBox();
         }
 
-        // ����� ����Ű
         private void Macro_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.ControlKey) OpenMouse();
             if (e.KeyCode == Keys.ShiftKey) OpenKeyboard();
         }
 
-        // ���콺 ��ư Ŭ��
         private void MouseButton_Click(object sender, EventArgs e)
         {
             OpenMouse();
         }
 
-        // Ű���� ��ư Ŭ��
         private void KeyboardButton_Click(object sender, EventArgs e)
         {
             OpenKeyboard();
         }
 
-        // ���� ��ư Ŭ��
         private void DeleteButton_Click(object sender, EventArgs e)
         {
             int index = ListBox.SelectedIndex;
@@ -65,22 +61,20 @@ namespace Macro_van_Rossum
             }
         }
 
-        // ���� ��ư Ŭ��
         private void SettinglButton_Click(object sender, EventArgs e)
         {
-            if (SettingButton.Text == "����")
+            if (SettingButton.Text == "설정")
             {
-                SettingButton.Text = "�ݱ�";
+                SettingButton.Text = "닫기";
                 ResizeForm(660, 10, 1, 0);
             }
             else
             {
-                SettingButton.Text = "����";
+                SettingButton.Text = "설정";
                 ResizeForm(400, 10, 1, 1);
             }
         }
 
-        // ���� ��ư Ŭ��
         private void RunButton_Click(object sender, EventArgs e)
         {
             WindowState = FormWindowState.Minimized;
@@ -96,9 +90,6 @@ namespace Macro_van_Rossum
             this.WindowState = FormWindowState.Normal;
         }
 
-        #region ��ũ�� ��� �Լ�
-
-        // ���콺 �Է� â ����
         public void OpenMouse()
         {
             this.WindowState = FormWindowState.Minimized;
@@ -109,7 +100,6 @@ namespace Macro_van_Rossum
             ListBox.SelectedIndex = list.Count - 1;
         }
 
-        // ���콺 ��ġ �̵�
         public void MouseSetPosCustom(int x, int y)
         {
             try
@@ -122,7 +112,6 @@ namespace Macro_van_Rossum
             }
         }
 
-        // ���콺 Ŭ��
         public void AutoMouseClick(int idx)
         {
             string str = list[idx].Item2;
@@ -148,7 +137,6 @@ namespace Macro_van_Rossum
             }
         }
 
-        // Ű���� �Է� â ����
         public void OpenKeyboard()
         {
             int x = this.Location.X;
@@ -159,7 +147,6 @@ namespace Macro_van_Rossum
             ListBox.SelectedIndex = list.Count - 1;
         }
 
-        // Ű���� �Է�
         public void AutoKeyboardInput(int idx)
         {
             string str = list[idx].Item2;
@@ -167,11 +154,6 @@ namespace Macro_van_Rossum
             SendKeys.Send($"{str}");
         }
 
-        #endregion
-
-        #region ��Ÿ ��� �Լ�
-
-        // ����Ʈ �ڽ� ���ΰ�ħ
         public void ReloadListBox()
         {
             ListBox.Items.Clear();
@@ -183,21 +165,20 @@ namespace Macro_van_Rossum
                 int x = list[idx].Item3;
                 int y = list[idx].Item4;
 
-                if (type == 0) // ���콺 Ŭ��
+                if (type == 0)
                 {
-                    ListBox.Items.Add($"[{idx}] ���콺 �Է� : {str}({x}, {y})");
+                    ListBox.Items.Add($"[{idx}] Mouse : {str}({x}, {y})");
                 }
-                else if (list[idx].Item1 == 1) // Ű���� �Է�
+                else if (list[idx].Item1 == 1)
                 {
-                    ListBox.Items.Add($"[{idx}] Ű���� �Է� : {str}");
+                    ListBox.Items.Add($"[{idx}] Keyboard : {str}");
                 }
             }
         }
 
-        // �� ũ�� ����
         public void ResizeForm(int resizeWidth, int resizeSpeed, int delay, int change)
         {
-            if (change == 0) // ���� ũ�� ����
+            if (change == 0)
             {
                 this.MaximumSize = new System.Drawing.Size(resizeWidth, this.Height);
 
@@ -209,7 +190,7 @@ namespace Macro_van_Rossum
 
                 this.MinimumSize = new System.Drawing.Size(resizeWidth, this.Height);
             }
-            else if (change == 1) // ���� ũ�� ����
+            else if (change == 1)
             {
                 this.MinimumSize = new System.Drawing.Size(resizeWidth, this.Height);
 
@@ -222,7 +203,5 @@ namespace Macro_van_Rossum
                 this.MaximumSize = new System.Drawing.Size(resizeWidth, this.Height);
             }
         }
-
-        #endregion
     }
 }
