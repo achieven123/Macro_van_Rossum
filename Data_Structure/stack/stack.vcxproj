@@ -23,6 +23,7 @@
     <ClCompile Include="02_struct_stack.cpp" />
     <ClCompile Include="03_dynamic_stack.cpp" />
     <ClCompile Include="04_dynamic_array_stack.cpp" />
+    <ClCompile Include="05_paren_matching.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

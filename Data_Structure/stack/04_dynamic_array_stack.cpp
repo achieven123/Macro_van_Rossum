@@ -33,7 +33,7 @@ void Push(StackType* s, element value) {
 
 element Pop(StackType* s) {
 	if (IsEmpty(s)) {
-		printf("스택 공백 에서\n");
+		printf("스택 공백 에러\n");
 		exit(1);
 	}
 	else return s->data[(s->top)--];
