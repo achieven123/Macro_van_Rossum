@@ -39,16 +39,16 @@ element Pop(StackType* s) {
 }
 
 int main() {
-	StackType stack;
+	StackType* s = (StackType*)malloc(sizeof(StackType));
 
-	InitStack(&stack);
+	InitStack(s);
 
 	for (int i = 0; i < 10; i++) {
-		Push(&stack, i);
+		Push(s, i);
 	}
 
 	for (int i = 0; i < 10; i++) {
-		printf("%d\n", Pop(&stack));
+		printf("%d\n", Pop(s));
 	}
 
 	return 0;
