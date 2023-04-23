@@ -72,7 +72,18 @@ LinkedListNode* ConnectList(LinkedListNode* head1, LinkedListNode* head2) {
 	return head1;
 }
 
+LinkedListNode* InsertList(LinkedListNode* head1, LinkedListNode* head2, LinkedListNode* pre) {
+	LinkedListNode* p = head2;
 
+	while (p->link != NULL) {
+		p = p->link;
+	}
+
+	p->link = pre->link;
+	pre->link = head2;
+
+	return head1;
+}
 
 int main() {
 	LinkedListNode* head1 = NULL;
@@ -83,7 +94,8 @@ int main() {
 		head2 = InsertFirstNode(head2, i);
 	}
 
-	head1 = ConnectList(head1, head2);
+	//head1 = InsertList(head1, head2, head1->link);
+	//head1 = ConnectList(head1, head2);
 
 	PrintList(head1);
 
