@@ -21,5 +21,11 @@
     <ClCompile Include="02_struct_stack.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="03_dynamic_stack.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="04_dynamic_array_stack.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
