@@ -18,5 +18,8 @@
     <ClCompile Include="01_linear_queue.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="02_circular_queue.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
