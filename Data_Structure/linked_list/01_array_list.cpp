@@ -3,6 +3,7 @@
 #define MAX 100
 
 typedef int element;
+
 typedef struct {
 	element array[MAX];
 	int size;

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 typedef int element;
+
 typedef struct LinkedListNode {
 	element data;
 	LinkedListNode* link;
