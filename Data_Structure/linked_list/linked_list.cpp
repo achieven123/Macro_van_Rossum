@@ -85,17 +85,35 @@ LinkedListNode* InsertList(LinkedListNode* head1, LinkedListNode* head2, LinkedL
 	return head1;
 }
 
+LinkedListNode* ReverseList(LinkedListNode* head) {
+	LinkedListNode* p, * q, * r;
+	p = head;
+	q = NULL;
+
+	while (p != NULL) {
+		r = q;
+		q = p;
+		p = p->link;
+		q->link = r;
+	}
+
+	return q;
+}
+
 int main() {
 	LinkedListNode* head1 = NULL;
 	LinkedListNode* head2 = NULL;
-	
+
 	for (int i = 0; i < 5; i++) {
 		head1 = InsertFirstNode(head1, i);
-		head2 = InsertFirstNode(head2, i);
 	}
+	/*for (int i = 5; i < 10; i++) {
+		head2 = InsertFirstNode(head2, i);
+	}*/
 
 	//head1 = InsertList(head1, head2, head1->link);
 	//head1 = ConnectList(head1, head2);
+	head1 = ReverseList(head1);
 
 	PrintList(head1);
 
