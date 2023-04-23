@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef char element;
+typedef int element;
 
 typedef struct StackType {
 	element* data;
@@ -47,61 +47,40 @@ element Top(StackType* s) {
 	else return s->data[s->top];
 }
 
-int Priority(char c) {
-	if (c == '+' || c == '-') return 1;
-	if (c == '*' || c == '/') return 2;
-	return 0;
-}
-
-void InfixToPostfix(char str[]) {
+int Calculate(char str[]) {
 	StackType s;
 
 	InitStack(&s);
 
 	for (int i = 0; str[i] != NULL; i++) {
-		//1. 피연산자는 출력
-		if (str[i] >= '1' && str[i] <= '9') {
-			printf("%c", str[i]);
-			continue;
-		}
+		int a, b, c = 0;
 
-		//2. 스택이 비어있는 경우 또는 '('인 경우 push
-		if (IsEmpty(&s) || str[i] == '(') {
-			Push(&s, str[i]);
-			continue;
-		}
+		switch (str[i]) {
+		case '+':
+		case '-':
+		case '*':
+		case '/':
+			b = Pop(&s);
+			a = Pop(&s);
 
-		//3. ')'인 경우 '(' 만날 때까지 출력
-		if (str[i] == ')') {
-			while (Top(&s) != '(') {
-				printf("%c", Pop(&s));
-			}
+			if (str[i] == '+') c = a + b;
+			if (str[i] == '-') c = a - b;
+			if (str[i] == '*') c = a * b;
+			if (str[i] == '/') c = a / b;
 
-			continue;
-		}
-
-		//4. top보다 우선순위 크면 push
-		if (Priority(Top(&s)) < Priority(str[i])) {
-			Push(&s, str[i]);
-		}
-
-		//5. top보다 우선순위 작거나 같으면 pop 후 반복
-		else {
-			while (!IsEmpty(&s) && Priority(Top(&s)) >= Priority(str[i])) {
-				printf("%c", Pop(&s));
-			}
-
-			Push(&s, str[i]);
+			Push(&s, c);
+			break;
+		
+		default:
+			Push(&s, str[i] - '0');
+			break;
 		}
 	}
 
-	while (!IsEmpty(&s)) {
-		printf("%c", Pop(&s));
-	}
+	int res = Pop(&s);
 
-	printf("\n");
-
-	free(&s);
+	if (!IsEmpty(&s)) exit(1);
+	else return res;
 }
 
 int main() {
@@ -113,7 +92,7 @@ int main() {
 
 		scanf("%s", &str);
 
-		InfixToPostfix(str);
+		printf("%d\n", Calculate(str));
 	}
 
 	return 0;

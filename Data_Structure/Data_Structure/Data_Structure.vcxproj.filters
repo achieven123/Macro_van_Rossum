@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\stack\06_infix_to_postfix.cpp">
+    <ClCompile Include="..\stack\07_postfix_calculate.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
