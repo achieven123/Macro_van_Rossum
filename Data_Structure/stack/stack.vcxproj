@@ -25,6 +25,8 @@
     <ClCompile Include="04_dynamic_array_stack.cpp" />
     <ClCompile Include="05_paren_matching.cpp" />
     <ClCompile Include="06_infix_to_postfix.cpp" />
+    <ClCompile Include="07_postfix_calculate.cpp" />
+    <ClCompile Include="08_maze.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

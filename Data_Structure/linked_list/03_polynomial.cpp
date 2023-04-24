@@ -3,35 +3,38 @@
 
 typedef int element;
 
-typedef struct LinkedListNode {
+typedef struct ListType {
 	element coef;
 	element exop;
-	LinkedListNode* link;
-} LinkedListNode;
+	ListType* link;
+} ListType;
 
-typedef struct LinkedListHead {
+typedef struct ListHead {
 	int size;
-	LinkedListNode* head;
-	LinkedListNode* tail;
-} LinkedListHead;
+	ListType* head;
+	ListType* tail;
+} ListHead;
 
-LinkedListHead* CreateHead() {
-	LinkedListHead* p = (LinkedListHead*)malloc(sizeof(LinkedListHead));
-
+ListHead* CreateHead() {
+	ListHead* p = (ListHead*)malloc(sizeof(ListHead));
+	
 	p->size = 0;
-	p->head = p->tail = NULL;
+	p->head = NULL;
+	p->tail = NULL;
 
 	return p;
 }
 
-void InsertNode(LinkedListHead* p, element coef, element exop) {
-	LinkedListNode* temp = (LinkedListNode*)malloc(sizeof(LinkedListNode));
+void InsertNode(ListHead* p, element coef, element exop) {
+	ListType* temp = (ListType*)malloc(sizeof(ListType));
+	
 	temp->coef = coef;
 	temp->exop = exop;
 	temp->link = NULL;
 
 	if (p->tail == NULL) {
-		p->head = p->tail = temp;
+		p->head = temp;
+		p->tail = temp;
 	}
 	else {
 		p->tail->link = temp;
@@ -41,9 +44,9 @@ void InsertNode(LinkedListHead* p, element coef, element exop) {
 	p->size++;
 }
 
-void PolyAdd(LinkedListHead* p1, LinkedListHead* p2, LinkedListHead* p3) {
-	LinkedListNode* a = p1->head;
-	LinkedListNode* b = p2->head;
+void PolyAdd(ListHead* p1,ListHead* p2, ListHead* p3) {
+	ListType* a = p1->head;
+	ListType* b = p2->head;
 	int sum;
 
 	while (a && b) {
@@ -61,14 +64,13 @@ void PolyAdd(LinkedListHead* p1, LinkedListHead* p2, LinkedListHead* p3) {
 			InsertNode(p3, b->coef, b->exop);
 			b = b->link;
 		}
-
 	}
 		for (; a != NULL; a = a->link) InsertNode(p3, a->coef, a->exop);
 		for (; b != NULL; b = b->link) InsertNode(p3, b->coef, b->exop);
 }
 
-void PrintPoly(LinkedListHead* p3) {
-	LinkedListNode* p = p3->head;
+void PrintPoly(ListHead* p3) {
+	ListType* p = p3->head;
 
 	for (; p != NULL; p = p->link) {
 		printf("%d^%d + ", p->coef, p->exop);
@@ -76,9 +78,9 @@ void PrintPoly(LinkedListHead* p3) {
 }
 
 int main() {
-	LinkedListHead* a = CreateHead();
-	LinkedListHead* b = CreateHead();
-	LinkedListHead* c = CreateHead();
+	ListHead* a = CreateHead();
+	ListHead* b = CreateHead();
+	ListHead* c = CreateHead();
 
 	InsertNode(a, 1, 5);
 	InsertNode(a, 1, 4);
