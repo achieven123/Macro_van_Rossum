@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="01_array_list.cpp" />
     <ClCompile Include="02_linked_list.cpp" />
+    <ClCompile Include="03_polynomial.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
