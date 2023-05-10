@@ -30,6 +30,7 @@ int main() {
 	draw_map();
 	draw_menu(MENU_X, MENU_Y);
 	select_menu(MENU_X, MENU_Y);
+	_getch();
 }
 
 int input_key() {
@@ -69,33 +70,40 @@ void draw_menu(int x, int y) {
 
 	gotoxy(x, y + 1);
 	printf("게임방법");
-	
+
 	gotoxy(x + 1, y + 2);
 	printf("종료");
 }
 
 void select_menu(int x, int y) {
-	int input = input_key();
-	int index = 0;
+	int input;
+	int index = -1;
 
-	if (input == UP) index = abs(index - 1) % 3;
-	if (input == DOWN) index = abs(index + 1) % 3;
+	while (true) {
+		input = input_key();
 
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+		if (input == UP) index = abs(index - 1) % 3;
+		if (input == DOWN) index = abs(index + 1) % 3;
 
-	switch (index) {
-	case 0:
-		gotoxy(x, y);
-		printf("게임시작");
-	case 1:
-		gotoxy(x, y + 1);
-		printf("게임방법");
-	case 2:
-		gotoxy(x + 1, y + 2);
-		printf("종료");
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+
+		switch (index) {
+		case 0:
+			gotoxy(x, y);
+			printf("게임시작");
+			break;
+		case 1:
+			gotoxy(x, y + 1);
+			printf("게임방법");
+			break;
+		case 2:
+			gotoxy(x + 1, y + 2);
+			printf("종료");
+			break;
+		}
+
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
 	}
-
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0);
 }
 
 void draw_map() {
