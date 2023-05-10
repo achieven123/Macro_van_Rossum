@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <windows.h>
 #include <conio.h>
+#include <math.h>
 
 #define UP 72
 #define DOWN 80
@@ -14,15 +15,31 @@
 #define MAP_WIDTH 64
 #define MAP_HEIGHT 40
 
+#define MENU_X 34
+#define MENU_Y 25
+
 void gotoxy(int x, int y);
 void draw_title();
 void draw_menu(int x, int y);
+void select_menu(int x, int y);
 void draw_map();
+int input_key();
 
 int main() {
 	draw_title();
-	draw_menu(34, 25);
 	draw_map();
+	draw_menu(MENU_X, MENU_Y);
+	select_menu(MENU_X, MENU_Y);
+}
+
+int input_key() {
+	int input = _getch();
+
+	if (input == 224) {
+		input = _getch();
+		return input;
+	}
+	else return 0;
 }
 
 void gotoxy(int x, int y) {
@@ -40,7 +57,7 @@ void draw_title() {
 	printf("				===============================================================================\n\n");
 	printf("				####### ###    ##  #####  ##   ## #######    ######   #####  ###    ### #######\n");
 	printf("				##      ####   ## ##   ## ##  ##  ##        ##       ##   ## ####  #### ##\n");
-	printf("				####### ## ##  ## ####### #####   #####     ##   ### ####### ## #### ## #####\n");
+	printf("				####### ## ##  ## ####### #####   #######   ##   ### ####### ## #### ## #######\n");
 	printf("				     ## ##  ## ## ##   ## ##  ##  ##        ##    ## ##   ## ##  ##  ## ##\n");
 	printf("				####### ##   #### ##   ## ##   ## #######    ######  ##   ## ##      ## #######\n\n");
 	printf("				===============================================================================\n");
@@ -52,13 +69,33 @@ void draw_menu(int x, int y) {
 
 	gotoxy(x, y + 1);
 	printf("게임방법");
-
+	
 	gotoxy(x + 1, y + 2);
 	printf("종료");
 }
 
-void select_menu() {
+void select_menu(int x, int y) {
+	int input = input_key();
+	int index = 0;
 
+	if (input == UP) index = abs(index - 1) % 3;
+	if (input == DOWN) index = abs(index + 1) % 3;
+
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+
+	switch (index) {
+	case 0:
+		gotoxy(x, y);
+		printf("게임시작");
+	case 1:
+		gotoxy(x, y + 1);
+		printf("게임방법");
+	case 2:
+		gotoxy(x + 1, y + 2);
+		printf("종료");
+	}
+
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0);
 }
 
 void draw_map() {
