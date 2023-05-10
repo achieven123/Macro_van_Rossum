@@ -1,63 +1,64 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
+#include <conio.h>
 
-#define LEFT 75
-#define RIGHT 77
 #define UP 72
 #define DOWN 80
-#define PAUSE 112
+#define LEFT 75
+#define RIGHT 77
 #define ESC 27
 
-#define MAP_X 3
-#define MAP_Y 2
-#define MAP_WIDTH 70
-#define MAP_HEIGHT 20
+#define GAP_WIDTH 4
+#define GAP_HEIGHT 2
+#define MAP_WIDTH 66
+#define MAP_HEIGHT 40
+
+void gotoxy(int x, int y);
+void main_title();
+void main_menu();
+void draw_map();
+
+int main() {
+	main_title();
+	draw_map();
+}
 
 void gotoxy(int x, int y) {
-	COORD pos = { x, y };
+	COORD pos = { x * 2, y };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 }
 
-void title() {
-	printf("\n\n\n\n");
-	printf("	####### ###    ##  #####  ##   ## #######\n");
-	printf("	##      ####   ## ##   ## ##  ##  ##\n");
-	printf("	####### ## ##  ## ####### #####   #####\n");
-	printf("	     ## ##  ## ## ##   ## ##  ##  ##\n");
-	printf("	####### ##   #### ##   ## ##   ## #######\n\n");
+void main_title() {
+	printf("Set the console window to full screen and press any key...");
+	getch();
+	system("cls");
 
-	printf("	 ######   #####  ###    ### #######\n");
-	printf("	##       ##   ## ####  #### ##\n");
-	printf("	##   ### ####### ## #### ## #####\n");
-	printf("	##    ## ##   ## ##  ##  ## ##\n");
-	printf("	 ######  ##   ## ##      ## #######\n");
+	printf("\n\n\n\n\n");
+	printf("				####### ###    ##  #####  ##   ## #######	 ######   #####  ###    ### #######\n");
+	printf("				##      ####   ## ##   ## ##  ##  ##		##       ##   ## ####  #### ##\n");
+	printf("				####### ## ##  ## ####### #####   #####		##   ### ####### ## #### ## #####\n");
+	printf("				     ## ##  ## ## ##   ## ##  ##  ##		##    ## ##   ## ##  ##  ## ##\n");
+	printf("				####### ##   #### ##   ## ##   ## #######	 ######  ##   ## ##      ## #######\n\n");
 }
 
-void menu() {
+void main_menu() {
 
 }
 
-void draw_map(void) { //맵 테두리 그리는 함수 
-	for (int i = 0; i < MAP_WIDTH; i+= 2) {
-		gotoxy(MAP_X + i, MAP_Y);
+void draw_map() {
+	for (int i = 0; i < MAP_WIDTH; i++) {
+		gotoxy(GAP_WIDTH + i, GAP_HEIGHT);
 		printf("■");
 	}
-	for (int i = MAP_Y + 1; i < MAP_HEIGHT - 1; i++) {
-		gotoxy(MAP_X, i);
+	for (int i = GAP_HEIGHT + 1; i < MAP_HEIGHT + 1; i++) {
+		gotoxy(GAP_WIDTH, i);
 		printf("■");
-		gotoxy(MAP_X + MAP_WIDTH - 1, i);
-		printf("■");
-	}
-	for (int i = 0; i < MAP_WIDTH; i+= 2) {
-		gotoxy(MAP_X + i, MAP_Y + MAP_HEIGHT - 1);
+		gotoxy(GAP_WIDTH + MAP_WIDTH - 1, i);
 		printf("■");
 	}
-}
-
-int main() {
-	title();
-
-
-	draw_map();
+	for (int i = 0; i < MAP_WIDTH; i++) {
+		gotoxy(GAP_WIDTH + i, GAP_HEIGHT + MAP_HEIGHT - 1);
+		printf("■");
+	}
 }
