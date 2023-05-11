@@ -32,7 +32,8 @@ char game_title[9][81] = {
 	"================================================================================"
 };
 int score = 0;
-double elapsed_time = 0;
+int elapsed_minute = 0;
+int elapsed_second = 0;
 
 void gotoxy(int x, int y);
 int input_key();
@@ -45,16 +46,21 @@ void game_start();
 void draw_menu(int index);
 void select_menu();
 
-void main() {
-	clock_t start = clock();
-	elapsed_time -= start;
+void start_time();
+void end_time();
 
-	init();
-	draw_map();
-	draw_title();
-	draw_menu(0);
-	select_menu();
-	_getch();
+void game_over();
+
+void main() {
+	while (true) {
+		start_time();
+		init();
+		draw_map();
+		draw_title();
+		draw_menu(0);
+		select_menu();
+		clock_t end = clock();
+	}
 }
 
 void gotoxy(int x, int y) {
@@ -169,34 +175,6 @@ void game_start() {
 	gotoxy(28, 14); printf("                                    OOOOOOO0                                    ");
 }
 
-void game_over() {
-	for (int i = 0; i < 3; i++) { gotoxy(MENU_X, MENU_Y + i); printf("        "); }
-	clock_t end = clock();
-	elapsed_time += end;
-
-	gotoxy(28, 22); printf("점수 : %d", score);
-	gotoxy(28, 23); printf("시간 : %lf", elapsed_time);
-
-	while (true) {
-		srand(time(0));
-		int color = rand() % 15 + 1;
-		int delay = 500;
-
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
-
-		gotoxy(28, 10); printf("================================================================================");
-		gotoxy(28, 11); printf("                                                                                ");
-		gotoxy(28, 12); printf("  ######   #####  ###    ### #######     ######  ##        ## ####### #######   ");
-		gotoxy(28, 13); printf(" ##       ##   ## ####  #### ##         ##    ##  ##      ##  ##      ##    ##  ");
-		gotoxy(28, 14); printf(" ##   ### ####### ## #### ## #######    ##    ##   ##    ##   ####### #######   ");
-		gotoxy(28, 15); printf(" ##    ## ##   ## ##  ##  ## ##         ##    ##    ##  ##    ##      ##   ##   ");
-		gotoxy(28, 16); printf("  ######  ##   ## ##      ## #######     ######      ####     ####### ##    ##  ");
-		gotoxy(28, 17); printf("                                                                                ");
-		gotoxy(28, 18); printf("================================================================================");
-		Sleep(delay);
-	}
-}
-
 int input_key() {
 	int input = _getch();
 
@@ -249,16 +227,46 @@ void select_menu() {
 	}
 }
 
-double start_time() {
-	double result;
+void game_over() {
+	end_time();
 
-	static time_t start = time(NULL);
+	for (int i = 0; i < 3; i++) { gotoxy(MENU_X, MENU_Y + i); printf("        "); }
+	
+	gotoxy(28, 22); printf("점수 : %d", score);
+	gotoxy(28, 23); printf("시간 : %02d:%02d", elapsed_minute, elapsed_second);
 
-	return (double)start;
+	while (true) {
+		srand(time(0));
+		int color = rand() % 15 + 1;
+		int delay = 500;
+
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+
+		gotoxy(28, 10); printf("================================================================================");
+		gotoxy(28, 11); printf("                                                                                ");
+		gotoxy(28, 12); printf("  ######   #####  ###    ### #######     ######  ##        ## ####### #######   ");
+		gotoxy(28, 13); printf(" ##       ##   ## ####  #### ##         ##    ##  ##      ##  ##      ##    ##  ");
+		gotoxy(28, 14); printf(" ##   ### ####### ## #### ## #######    ##    ##   ##    ##   ####### #######   ");
+		gotoxy(28, 15); printf(" ##    ## ##   ## ##  ##  ## ##         ##    ##    ##  ##    ##      ##   ##   ");
+		gotoxy(28, 16); printf("  ######  ##   ## ##      ## #######     ######      ####     ####### ##    ##  ");
+		gotoxy(28, 17); printf("                                                                                ");
+		gotoxy(28, 18); printf("================================================================================");
+		Sleep(delay);
+		
+		//if ()
+	}
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+	
 }
 
-//int end_time(double ) {
-//	time_t end = time(NULL);
-//
-//	result = (double)(end - start);
-//}
+void start_time() {
+	clock_t start = clock();
+	elapsed_second -= start / CLOCKS_PER_SEC;
+}
+
+void end_time() {
+	clock_t end = clock();
+	elapsed_second += end / CLOCKS_PER_SEC;
+	elapsed_minute = elapsed_second / 60;
+	elapsed_second %= 60;
+}
