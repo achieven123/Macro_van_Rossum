@@ -20,15 +20,28 @@
 
 void gotoxy(int x, int y);
 void draw_title();
+void start_game();
 void draw_menu(int x, int y);
 void select_menu(int x, int y);
 void draw_map();
 int input_key();
 
 int main() {
-	draw_title();
+	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
+	cursorInfo.bVisible = 0;
+	cursorInfo.dwSize = 1;
+	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+
+	printf("Set the console window to full screen and press any key...");
+	getch();
+	system("cls");
+
 	draw_map();
 	draw_menu(MENU_X, MENU_Y);
+	draw_title();
+	getch();
+	start_game();
+
 	select_menu(MENU_X, MENU_Y);
 	_getch();
 }
@@ -49,19 +62,84 @@ void gotoxy(int x, int y) {
 }
 
 void draw_title() {
-	printf("Set the console window to full screen and press any key...");
-	getch();
-	system("cls");
-
-	printf("\n\n\n\n\n\n\n\n\n\n\n");
-
-	printf("				===============================================================================\n\n");
-	printf("				####### ###    ##  #####  ##   ## #######    ######   #####  ###    ### #######\n");
-	printf("				##      ####   ## ##   ## ##  ##  ##        ##       ##   ## ####  #### ##\n");
-	printf("				####### ## ##  ## ####### #####   #######   ##   ### ####### ## #### ## #######\n");
-	printf("				     ## ##  ## ## ##   ## ##  ##  ##        ##    ## ##   ## ##  ##  ## ##\n");
-	printf("				####### ##   #### ##   ## ##   ## #######    ######  ##   ## ##      ## #######\n\n");
+	gotoxy(0, 11);
 	printf("				===============================================================================\n");
+	printf("				                                                                               \n");
+	printf("				####### ###    ##  #####  ##   ## #######    ######   #####  ###    ### #######\n");
+	printf("				##      ####   ## ##   ## ##  ##  ##        ##       ##   ## ####  #### ##     \n");
+	printf("				####### ## ##  ## ####### #####   #######   ##   ### ####### ## #### ## #######\n");
+	printf("				     ## ##  ## ## ##   ## ##  ##  ##        ##    ## ##   ## ##  ##  ## ##     \n");
+	printf("				####### ##   #### ##   ## ##   ## #######    ######  ##   ## ##      ## #######\n");
+	printf("				                                                                               \n");
+	printf("				===============================================================================\n");
+}
+
+void start_game() {
+	int delay = 300;
+
+	Sleep(delay);
+	gotoxy(0, 11);
+	printf("				                                                                               \n");
+	printf("				===============================================================================\n");
+	printf("				####### ###    ##  #####  ##   ## #######    ######   #####  ###    ### #######\n");
+	printf("				##      ####   ## ##   ## ##  ##  ##        ##       ##   ## ####  #### ##     \n");
+	printf("				####### ## ##  ## ####### #####   #######   ##   ### ####### ## #### ## #######\n");
+	printf("				     ## ##  ## ## ##   ## ##  ##  ##        ##    ## ##   ## ##  ##  ## ##     \n");
+	printf("				####### ##   #### ##   ## ##   ## #######    ######  ##   ## ##      ## #######\n");
+	printf("				===============================================================================\n");
+	printf("				                                                                               \n");
+
+	Sleep(delay);
+	gotoxy(0, 11);
+	printf("				                                                                               \n");
+	printf("				                                                                               \n");
+	printf("				===============================================================================\n");
+	printf("				##      ####   ## ##   ## ##  ##  ##        ##       ##   ## ####  #### ##     \n");
+	printf("				####### ## ##  ## ####### #####   #######   ##   ### ####### ## #### ## #######\n");
+	printf("				     ## ##  ## ## ##   ## ##  ##  ##        ##    ## ##   ## ##  ##  ## ##     \n");
+	printf("				===============================================================================\n");
+	printf("				                                                                               \n");
+	printf("				                                                                               \n");
+
+	Sleep(delay);
+	gotoxy(0, 11);
+	printf("				                                                                               \n");
+	printf("				                                                                               \n");
+	printf("				                                                                               \n");
+	printf("				===============================================================================\n");
+	printf("				####### ## ##  ## ####### #####   #######   ##   ### ####### ## #### ## #######\n");
+	printf("				===============================================================================\n");
+	printf("				                                                                               \n");
+	printf("				                                                                               \n");
+	printf("				                                                                               \n");
+
+	Sleep(delay);
+	gotoxy(0, 11);
+	printf("				                                                                               \n");
+	printf("				                                                                               \n");
+	printf("				                                                                               \n");
+	printf("				                                                                               \n");
+	printf("				===============================================================================\n");
+	printf("				                                                                               \n");
+	printf("				                                                                               \n");
+	printf("				                                                                               \n");
+	printf("				                                                                               \n");
+
+	Sleep(delay);
+	gotoxy(0, 15);
+	printf("				          ===========================================================          \n");
+
+	Sleep(delay);
+	gotoxy(0, 15);
+	printf("				                    =======================================                    \n");
+
+	Sleep(delay);
+	gotoxy(0, 15);
+	printf("				                              ===================                              \n");
+
+	Sleep(delay);
+	gotoxy(0, 15);
+	printf("				                                   =========                                   \n");
 }
 
 void draw_menu(int x, int y) {
@@ -77,7 +155,7 @@ void draw_menu(int x, int y) {
 
 void select_menu(int x, int y) {
 	int input;
-	int index = -1;
+	int index = 0;
 
 	while (true) {
 		input = input_key();
