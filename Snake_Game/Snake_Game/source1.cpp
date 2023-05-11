@@ -1,4 +1,4 @@
-#include <stdio.h>
+﻿#include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
 #include <conio.h>
@@ -21,6 +21,30 @@
 
 #define MENU_X 64
 #define MENU_Y 25
+
+enum {
+	BLACK,
+	D_BLUE,
+	D_GREEN,
+	D_SKYBLUE,
+	D_RED,
+	D_VIOLET,
+	D_YELLOW,
+	GRAY,
+	D_GRAY,
+	BLUE,
+	GREEN,
+	SKYBLUE,
+	RED,
+	VIOLET,
+	YELLOW,
+	WHITE,
+};
+
+void SetColor(int backcolor, int fontcolor)
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), backcolor * 16 + fontcolor);
+}
 
 char game_title[9][81] = {
 	"================================================================================",
@@ -52,14 +76,22 @@ void game_start();
 void game_over();
 
 void main() {
-	printf("%d", _getch());
-	_getch();
-	while (true) {
-		init();
-		draw_map();
-		draw_title();
-		select_menu();
-	}
+	SetColor(GRAY, WHITE);
+	//SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);
+	printf("                               \n");
+	//printf("■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■\n");
+	//printf("■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■\n");
+	//printf("■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■\n");
+	//printf("■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■\n");
+	//SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+	//printf("%d", _getch());
+	//_getch();
+	//while (true) {
+		//init();
+		//draw_map();
+		//draw_title();
+		//select_menu();
+	//}
 }
 
 void gotoxy(int x, int y) {
@@ -104,21 +136,21 @@ void init() {
 	system("cls");
 }
 void draw_map() {
-	for (int i = 0; i < MAP_WIDTH; i++) {
+	for (int i = 0; i < MAP_WIDTH; i += 2) {
 		gotoxy(GAP_WIDTH + i, GAP_HEIGHT);
-		printf("#");
+		printf("■");
 	}
 
 	for (int i = 0; i < MAP_HEIGHT + 2; i++) {
 		gotoxy(GAP_WIDTH - 1, GAP_HEIGHT + i);
-		printf("#");
+		printf("■");
 		gotoxy(GAP_WIDTH + MAP_WIDTH, GAP_HEIGHT + i);
-		printf("#");
+		printf("■");
 	}
 
-	for (int i = 0; i < MAP_WIDTH; i++) {
+	for (int i = 0; i < MAP_WIDTH; i += 2) {
 		gotoxy(GAP_WIDTH + i, GAP_HEIGHT + MAP_HEIGHT + 1);
-		printf("#");
+		printf("■");
 	}
 }
 void draw_title() {
@@ -140,15 +172,15 @@ void draw_menu(int index) {
 		switch (idx) {
 		case 0:
 			gotoxy(MENU_X, MENU_Y);
-			printf("���ӽ���");
+			printf("게임시작");
 			break;
 		case 1:
 			gotoxy(MENU_X, MENU_Y + 1);
-			printf("���Ӽ���");
+			printf("게임설정");
 			break;
 		case 2:
 			gotoxy(MENU_X + 2, MENU_Y + 2);
-			printf("����");
+			printf("종료");
 			break;
 		}
 
@@ -241,13 +273,13 @@ void game_over() {
 
 	for (int i = 0; i < 3; i++) { gotoxy(MENU_X, MENU_Y + i); printf("        "); }
 
-	gotoxy(28, 22); printf("���� : %d", score);
-	gotoxy(28, 23); printf("�ð� : %02d:%02d", elapsed_minute, elapsed_second);
+	gotoxy(28, 22); printf("점수 : %d", score);
+	gotoxy(28, 23); printf("시간 : %02d:%02d", elapsed_minute, elapsed_second);
 
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 6; i++) {
 		int color = rand() % 15 + 1;
-		int delay = 300;
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+		int delay = 200;
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), i + 9);
 
 		gotoxy(28, 10); printf("================================================================================");
 		gotoxy(28, 11); printf("                                                                                ");
@@ -262,7 +294,7 @@ void game_over() {
 	}
 
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
-	gotoxy(40, 22); printf("����Ͻðڽ��ϱ�? (Y/N)");
+	gotoxy(40, 22); printf("계속하시겠습니까? (Y/N)");
 
 	while (true) {
 		fflush(stdin);
