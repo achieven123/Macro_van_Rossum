@@ -73,15 +73,13 @@ void draw_info();
 int input_key();
 void game_start();
 void create_snake();
+LinkedListNode* create_body(LinkedListNode* head);
 
 int main() {
 	init();
 	draw_map();
 	draw_info();
 	game_start();
-
-
-	getch();
 
 	return 0;
 }
@@ -220,17 +218,12 @@ void game_start() {
 	int location_x = GAP_WIDTH + MAP_WIDTH - 5;
 	int location_y = (GAP_HEIGHT + 3 + MAP_HEIGHT) / 2 + 1;
 
-	set_color(BLUE, WHITE);
-	gotoxy(location_x, location_y);
-	printf(" ");
-	gotoxy(location_x + 1, location_y);
-	printf(" ");
-
 	while (true) {
 		if (input_key() == RIGHT) {
 			set_color(BLACK, WHITE);
 			gotoxy(GAP_WIDTH - 2, GAP_HEIGHT + MAP_HEIGHT + 1);
 			printf("Start Game!");
+
 			create_snake();
 			break;
 		}
@@ -240,7 +233,7 @@ void game_start() {
 void create_snake() {
 	LinkedListNode* head = (LinkedListNode*)malloc(sizeof(LinkedListNode));
 	head->direction = RIGHT;
-
+	
 	while (true) {
 		int dir = head->direction;
 		int input = input_key();
@@ -250,6 +243,8 @@ void create_snake() {
 				(input != LEFT && dir == RIGHT) || (input != RIGHT && dir == LEFT)) {
 				head->direction = input;
 
+				create_body(head);
+
 				set_color(BLACK, WHITE);
 				gotoxy(GAP_WIDTH - 2, GAP_HEIGHT + MAP_HEIGHT + 1);
 				printf("키 입력이 정상 %d", input);
@@ -258,4 +253,13 @@ void create_snake() {
 		
 		if (input == ESC) break;
 	}
+}
+
+LinkedListNode* create_body(LinkedListNode* head) {
+	LinkedListNode* p = (LinkedListNode*)malloc(sizeof(LinkedListNode));
+
+	p->link = pre->link;
+	pre->link = p;
+
+	return head;
 }
