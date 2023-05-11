@@ -176,9 +176,9 @@ void game_over() {
 	gotoxy(28, 17); printf("                                                                                ");
 	gotoxy(28, 18); printf("================================================================================");
 
-	gotoxy(MENU_X, MENU_Y); printf("Score : %d", score);
-	gotoxy(MENU_X, MENU_Y + 1); printf("Time : %d", );
-	gotoxy(MENU_X, MENU_Y + 2); printf("        ");
+	/*gotoxy(MENU_X, MENU_Y); printf("Score : %d", score);
+	gotoxy(MENU_X, MENU_Y + 1); printf("Time : %d");
+	gotoxy(MENU_X, MENU_Y + 2); printf("        ");*/
 }
 
 int input_key() {
@@ -241,10 +241,8 @@ double start_time() {
 	return (double)start;
 }
 
-int end_time(double ) {
-
-	time_t end = time(NULL);
-
-	result = (double)(end - start);
-
-}
+//int end_time(double ) {
+//	time_t end = time(NULL);
+//
+//	result = (double)(end - start);
+//}
