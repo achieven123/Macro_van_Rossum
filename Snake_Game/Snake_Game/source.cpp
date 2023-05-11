@@ -227,6 +227,18 @@ void select_menu() {
 	}
 }
 
+void start_time() {
+	clock_t start = clock();
+	elapsed_second -= start / CLOCKS_PER_SEC;
+}
+
+void end_time() {
+	clock_t end = clock();
+	elapsed_second += end / CLOCKS_PER_SEC;
+	elapsed_minute = elapsed_second / 60;
+	elapsed_second %= 60;
+}
+
 void game_over() {
 	end_time();
 
@@ -257,16 +269,4 @@ void game_over() {
 	}
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
 	
-}
-
-void start_time() {
-	clock_t start = clock();
-	elapsed_second -= start / CLOCKS_PER_SEC;
-}
-
-void end_time() {
-	clock_t end = clock();
-	elapsed_second += end / CLOCKS_PER_SEC;
-	elapsed_minute = elapsed_second / 60;
-	elapsed_second %= 60;
 }
