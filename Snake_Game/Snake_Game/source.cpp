@@ -37,6 +37,8 @@ int elapsed_second = 0;
 
 void gotoxy(int x, int y);
 int input_key();
+void start_time();
+void end_time();
 
 void init();
 void draw_map();
@@ -45,10 +47,6 @@ void draw_menu(int index);
 void select_menu();
 
 void game_start();
-
-void start_time();
-void end_time();
-
 void game_over();
 
 void main() {
@@ -67,7 +65,6 @@ void gotoxy(int x, int y) {
 	COORD pos = { x, y };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 }
-
 int input_key() {
 	int input = _getch();
 
@@ -81,6 +78,17 @@ int input_key() {
 	else return 0;
 }
 
+void start_time() {
+	clock_t start = clock();
+	elapsed_second -= start / CLOCKS_PER_SEC;
+}
+void end_time() {
+	clock_t end = clock();
+	elapsed_second += end / CLOCKS_PER_SEC;
+	elapsed_minute = elapsed_second / 60;
+	elapsed_second %= 60;
+}
+
 void init() {
 	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
 	cursorInfo.bVisible = FALSE;
@@ -91,7 +99,6 @@ void init() {
 	_getch();
 	system("cls");
 }
-
 void draw_map() {
 	for (int i = 0; i < MAP_WIDTH; i++) {
 		gotoxy(GAP_WIDTH + i, GAP_HEIGHT);
@@ -110,7 +117,6 @@ void draw_map() {
 		printf("#");
 	}
 }
-
 void draw_title() {
 	gotoxy(28, 10); printf("================================================================================");
 	gotoxy(28, 11); printf("                                                                                ");
@@ -122,7 +128,6 @@ void draw_title() {
 	gotoxy(28, 17); printf("                                                                                ");
 	gotoxy(28, 18); printf("================================================================================");
 }
-
 void draw_menu(int index) {
 
 	for (int idx = 0; idx < 3; idx++) {
@@ -146,7 +151,6 @@ void draw_menu(int index) {
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
 	}
 }
-
 void select_menu() {
 	int input;
 	int index = 0; // 0 1 2
@@ -226,19 +230,6 @@ void game_start() {
 	Sleep(delay);
 	gotoxy(28, 14); printf("                                    OOOOOOO0                                    ");
 }
-
-void start_time() {
-	clock_t start = clock();
-	elapsed_second -= start / CLOCKS_PER_SEC;
-}
-
-void end_time() {
-	clock_t end = clock();
-	elapsed_second += end / CLOCKS_PER_SEC;
-	elapsed_minute = elapsed_second / 60;
-	elapsed_second %= 60;
-}
-
 void game_over() {
 	end_time();
 
