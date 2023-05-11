@@ -11,6 +11,8 @@
 #define RIGHT 77
 #define ENTER 13
 #define ESC 27
+#define YES 121
+#define NO 110
 
 #define GAP_WIDTH 4
 #define GAP_HEIGHT 2
@@ -50,14 +52,13 @@ void game_start();
 void game_over();
 
 void main() {
+	printf("%d", _getch());
+	_getch();
 	while (true) {
-		start_time();
 		init();
 		draw_map();
 		draw_title();
-		draw_menu(0);
 		select_menu();
-		clock_t end = clock();
 	}
 }
 
@@ -90,12 +91,15 @@ void end_time() {
 }
 
 void init() {
+	start_time();
+
 	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
 	cursorInfo.bVisible = FALSE;
 	cursorInfo.dwSize = 1;
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
 
-	printf("Set the console window to full screen and press any key...");
+	system("cls");
+	gotoxy(0, 0); printf("Set the console window to full screen and press any key...");
 	_getch();
 	system("cls");
 }
@@ -154,12 +158,13 @@ void draw_menu(int index) {
 void select_menu() {
 	int input;
 	int index = 0; // 0 1 2
+	draw_menu(index);
 
 	while (true) {
 		input = input_key();
 
-		if (input == UP && index > 0) { draw_menu(--index); }
-		if (input == DOWN && index < 2) { draw_menu(++index); }
+		if (input == UP && index > 0) { draw_menu(--index); gotoxy(0, 0); printf("%d", index); }
+		if (input == DOWN && index < 2) { draw_menu(++index); gotoxy(0, 0); printf("%d", index); }
 		if (input == ENTER && index == 0) { game_start(); break; }
 		if (input == ENTER && index == 1) { game_over(); break; }
 		if (input == ENTER && index == 2) { system("cls");  break; }
@@ -232,17 +237,16 @@ void game_start() {
 }
 void game_over() {
 	end_time();
+	srand(time(0));
 
 	for (int i = 0; i < 3; i++) { gotoxy(MENU_X, MENU_Y + i); printf("        "); }
-	
+
 	gotoxy(28, 22); printf("점수 : %d", score);
 	gotoxy(28, 23); printf("시간 : %02d:%02d", elapsed_minute, elapsed_second);
 
-	while (true) {
-		srand(time(0));
+	for (int i = 0; i < 10; i++) {
 		int color = rand() % 15 + 1;
-		int delay = 500;
-
+		int delay = 300;
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 
 		gotoxy(28, 10); printf("================================================================================");
@@ -255,9 +259,23 @@ void game_over() {
 		gotoxy(28, 17); printf("                                                                                ");
 		gotoxy(28, 18); printf("================================================================================");
 		Sleep(delay);
-		
-		//if ()
 	}
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
-	
+
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+	gotoxy(40, 22); printf("계속하시겠습니까? (Y/N)");
+
+	while (true) {
+		fflush(stdin);
+		int input = _getch();
+		
+		if (input == YES) {
+			printf("Yes");
+			system("Pause");
+			return;
+		}
+		if (input == NO) {
+			system("cls");
+			exit(0);
+		}
+	}
 }
