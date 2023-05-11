@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <Windows.h>
 #include <conio.h>
 
@@ -17,6 +18,26 @@
 #define LEFT 75
 #define RIGHT 77
 #define ENTER 13
+
+typedef int element;
+
+typedef struct LinkedListNode {
+	element x;
+	element y;
+	int direction;
+	int length;
+	LinkedListNode* link;
+} LinkedListNode;
+//
+//LinkedListNode* InsertFirstNode(LinkedListNode* head, element value) {
+//	LinkedListNode* p = (LinkedListNode*)malloc(sizeof(LinkedListNode));
+//
+//	p->data = value;
+//	p->link = head;
+//	head = p;
+//
+//	return head;
+//}
 
 int map[MAP_HEIGHT][MAP_WIDTH * 2] = { 0 };
 int score = 0;
@@ -49,6 +70,7 @@ void draw_info();
 
 int input_key();
 void game_start();
+void create_snake();
 
 int main() {
 	init();
@@ -204,11 +226,31 @@ void game_start() {
 
 	while (true) {
 		if (input_key() == RIGHT) {
-			gotoxy(GAP_WIDTH - 2, GAP_HEIGHT + MAP_HEIGHT + 1);
 			set_color(BLACK, WHITE);
+			gotoxy(GAP_WIDTH - 2, GAP_HEIGHT + MAP_HEIGHT + 1);
 			printf("Start Game!");
+			create_snake();
 			break;
 		}
 	}
 }
 
+void create_snake() {
+	LinkedListNode* head = (LinkedListNode*)malloc(sizeof(LinkedListNode));
+	head->direction = RIGHT;
+	printf("adf");
+
+	while (true) {
+		int dir = head->direction;
+		int input = input_key();
+		
+		if ((input != UP && dir == DOWN) || (input != DOWN && dir == UP) ||
+			(input != LEFT && dir == RIGHT) || (input != RIGHT && dir == LEFT)) {
+			head->direction = input;
+
+			set_color(BLACK, WHITE);
+			gotoxy(GAP_WIDTH - 2, GAP_HEIGHT + MAP_HEIGHT + 1);
+			printf("키 입력이 정상 %d", input);
+		}
+	}
+}
