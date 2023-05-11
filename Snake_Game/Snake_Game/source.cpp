@@ -19,14 +19,29 @@
 #define MENU_Y 25
 
 void gotoxy(int x, int y);
+void init();
+void draw_map();
 void draw_title();
 void start_game();
-void draw_menu(int x, int y);
-void select_menu(int x, int y);
-void draw_map();
+
 int input_key();
 
 int main() {
+	init();
+	draw_map();
+	draw_title();
+	getch();
+	start_game();
+
+	_getch();
+}
+
+void gotoxy(int x, int y) {
+	COORD pos = { x * 2, y };
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+}
+
+void init() {
 	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
 	cursorInfo.bVisible = 0;
 	cursorInfo.dwSize = 1;
@@ -35,30 +50,25 @@ int main() {
 	printf("Set the console window to full screen and press any key...");
 	getch();
 	system("cls");
-
-	draw_map();
-	draw_menu(MENU_X, MENU_Y);
-	draw_title();
-	getch();
-	start_game();
-
-	select_menu(MENU_X, MENU_Y);
-	_getch();
 }
 
-int input_key() {
-	int input = _getch();
-
-	if (input == 224) {
-		input = _getch();
-		return input;
+void draw_map() {
+	for (int i = 0; i < MAP_WIDTH; i++) {
+		gotoxy(GAP_WIDTH + i, GAP_HEIGHT);
+		printf("■");
 	}
-	else return 0;
-}
 
-void gotoxy(int x, int y) {
-	COORD pos = { x * 2, y };
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+	for (int i = GAP_HEIGHT + 1; i < MAP_HEIGHT + 1; i++) {
+		gotoxy(GAP_WIDTH, i);
+		printf("■");
+		gotoxy(GAP_WIDTH + MAP_WIDTH - 1, i);
+		printf("■");
+	}
+
+	for (int i = 0; i < MAP_WIDTH; i++) {
+		gotoxy(GAP_WIDTH + i, GAP_HEIGHT + MAP_HEIGHT - 1);
+		printf("■");
+	}
 }
 
 void draw_title() {
@@ -142,7 +152,17 @@ void start_game() {
 	printf("				                                   =========                                   \n");
 }
 
-void draw_menu(int x, int y) {
+int input_key() {
+	int input = _getch();
+
+	if (input == 224) {
+		input = _getch();
+		return input;
+	}
+	else return 0;
+}
+
+void draw_menu(int x, int y, int index) {
 	gotoxy(x, y);
 	printf("게임시작");
 
@@ -153,9 +173,9 @@ void draw_menu(int x, int y) {
 	printf("종료");
 }
 
-void select_menu(int x, int y) {
+void select_menu() {
 	int input;
-	int index = 0;
+	int index = 0; // 0 1 2
 
 	while (true) {
 		input = input_key();
@@ -164,41 +184,8 @@ void select_menu(int x, int y) {
 		if (input == DOWN) index = abs(index + 1) % 3;
 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
-
-		switch (index) {
-		case 0:
-			gotoxy(x, y);
-			printf("게임시작");
-			break;
-		case 1:
-			gotoxy(x, y + 1);
-			printf("게임방법");
-			break;
-		case 2:
-			gotoxy(x + 1, y + 2);
-			printf("종료");
-			break;
 		}
 
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
-	}
-}
-
-void draw_map() {
-	for (int i = 0; i < MAP_WIDTH; i++) {
-		gotoxy(GAP_WIDTH + i, GAP_HEIGHT);
-		printf("■");
-	}
-
-	for (int i = GAP_HEIGHT + 1; i < MAP_HEIGHT + 1; i++) {
-		gotoxy(GAP_WIDTH, i);
-		printf("■");
-		gotoxy(GAP_WIDTH + MAP_WIDTH - 1, i);
-		printf("■");
-	}
-
-	for (int i = 0; i < MAP_WIDTH; i++) {
-		gotoxy(GAP_WIDTH + i, GAP_HEIGHT + MAP_HEIGHT - 1);
-		printf("■");
 	}
 }
