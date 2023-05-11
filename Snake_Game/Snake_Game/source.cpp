@@ -41,10 +41,10 @@ int input_key();
 void init();
 void draw_map();
 void draw_title();
-void game_start();
-
 void draw_menu(int index);
 void select_menu();
+
+void game_start();
 
 void start_time();
 void end_time();
@@ -66,6 +66,19 @@ void main() {
 void gotoxy(int x, int y) {
 	COORD pos = { x, y };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+}
+
+int input_key() {
+	int input = _getch();
+
+	if (input == 224) {
+		input = _getch();
+		return input;
+	}
+	else if (input == ENTER) {
+		return input;
+	}
+	else return 0;
 }
 
 void init() {
@@ -108,6 +121,45 @@ void draw_title() {
 	gotoxy(28, 16); printf("####### ##   #### ##   ## ##   ## #######     ######  ##   ## ##      ## #######");
 	gotoxy(28, 17); printf("                                                                                ");
 	gotoxy(28, 18); printf("================================================================================");
+}
+
+void draw_menu(int index) {
+
+	for (int idx = 0; idx < 3; idx++) {
+		if (idx == index) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
+
+		switch (idx) {
+		case 0:
+			gotoxy(MENU_X, MENU_Y);
+			printf("게임시작");
+			break;
+		case 1:
+			gotoxy(MENU_X, MENU_Y + 1);
+			printf("게임설정");
+			break;
+		case 2:
+			gotoxy(MENU_X + 2, MENU_Y + 2);
+			printf("종료");
+			break;
+		}
+
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+	}
+}
+
+void select_menu() {
+	int input;
+	int index = 0; // 0 1 2
+
+	while (true) {
+		input = input_key();
+
+		if (input == UP && index > 0) { draw_menu(--index); }
+		if (input == DOWN && index < 2) { draw_menu(++index); }
+		if (input == ENTER && index == 0) { game_start(); break; }
+		if (input == ENTER && index == 1) { game_over(); break; }
+		if (input == ENTER && index == 2) { system("cls");  break; }
+	}
 }
 
 void game_start() {
@@ -173,58 +225,6 @@ void game_start() {
 
 	Sleep(delay);
 	gotoxy(28, 14); printf("                                    OOOOOOO0                                    ");
-}
-
-int input_key() {
-	int input = _getch();
-
-	if (input == 224) {
-		input = _getch();
-		return input;
-	}
-	else if (input == ENTER) {
-		return input;
-	}
-	else return 0;
-}
-
-void draw_menu(int index) {
-
-	for (int idx = 0; idx < 3; idx++) {
-		if (idx == index) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
-
-		switch (idx) {
-		case 0:
-			gotoxy(MENU_X, MENU_Y);
-			printf("게임시작");
-			break;
-		case 1:
-			gotoxy(MENU_X, MENU_Y + 1);
-			printf("게임설정");
-			break;
-		case 2:
-			gotoxy(MENU_X + 2, MENU_Y + 2);
-			printf("종료");
-			break;
-		}
-
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
-	}
-}
-
-void select_menu() {
-	int input;
-	int index = 0; // 0 1 2
-
-	while (true) {
-		input = input_key();
-
-		if (input == UP && index > 0) { draw_menu(--index); }
-		if (input == DOWN && index < 2) { draw_menu(++index); }
-		if (input == ENTER && index == 0) { game_start(); break; }
-		if (input == ENTER && index == 1) { game_over(); break; }
-		if (input == ENTER && index == 2) { system("cls");  break; }
-	}
 }
 
 void start_time() {
