@@ -32,6 +32,7 @@ char game_title[9][81] = {
 	"================================================================================"
 };
 int score = 0;
+double elapsed_time = 0;
 
 void gotoxy(int x, int y);
 int input_key();
@@ -45,6 +46,9 @@ void draw_menu(int index);
 void select_menu();
 
 void main() {
+	clock_t start = clock();
+	elapsed_time -= start;
+
 	init();
 	draw_map();
 	draw_title();
@@ -166,19 +170,31 @@ void game_start() {
 }
 
 void game_over() {
-	gotoxy(28, 10); printf("================================================================================");
-	gotoxy(28, 11); printf("                                                                                ");
-	gotoxy(28, 12); printf("  ######   #####  ###    ### #######     ######  ##        ## ######   #######  ");
-	gotoxy(28, 13); printf(" ##       ##   ## ####  #### ##         ##    ##  ##      ##  ##   ##  ##       ");
-	gotoxy(28, 14); printf(" ##   ### ####### ## #### ## #######    ##    ##   ##    ##   #######  #######  ");
-	gotoxy(28, 15); printf(" ##    ## ##   ## ##  ##  ## ##         ##    ##    ##  ##    ##   ##  ##       ");
-	gotoxy(28, 16); printf("  ######  ##   ## ##      ## #######     ######      ####     ##    ## #######  ");
-	gotoxy(28, 17); printf("                                                                                ");
-	gotoxy(28, 18); printf("================================================================================");
+	for (int i = 0; i < 3; i++) { gotoxy(MENU_X, MENU_Y + i); printf("        "); }
+	clock_t end = clock();
+	elapsed_time += end;
 
-	/*gotoxy(MENU_X, MENU_Y); printf("Score : %d", score);
-	gotoxy(MENU_X, MENU_Y + 1); printf("Time : %d");
-	gotoxy(MENU_X, MENU_Y + 2); printf("        ");*/
+	gotoxy(28, 22); printf("점수 : %d", score);
+	gotoxy(28, 23); printf("시간 : %lf", elapsed_time);
+
+	while (true) {
+		srand(time(0));
+		int color = rand() % 15 + 1;
+		int delay = 500;
+
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+
+		gotoxy(28, 10); printf("================================================================================");
+		gotoxy(28, 11); printf("                                                                                ");
+		gotoxy(28, 12); printf("  ######   #####  ###    ### #######     ######  ##        ## ####### #######   ");
+		gotoxy(28, 13); printf(" ##       ##   ## ####  #### ##         ##    ##  ##      ##  ##      ##    ##  ");
+		gotoxy(28, 14); printf(" ##   ### ####### ## #### ## #######    ##    ##   ##    ##   ####### #######   ");
+		gotoxy(28, 15); printf(" ##    ## ##   ## ##  ##  ## ##         ##    ##    ##  ##    ##      ##   ##   ");
+		gotoxy(28, 16); printf("  ######  ##   ## ##      ## #######     ######      ####     ####### ##    ##  ");
+		gotoxy(28, 17); printf("                                                                                ");
+		gotoxy(28, 18); printf("================================================================================");
+		Sleep(delay);
+	}
 }
 
 int input_key() {
