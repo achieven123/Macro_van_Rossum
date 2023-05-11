@@ -13,8 +13,8 @@
 
 #define GAP_WIDTH 4
 #define GAP_HEIGHT 2
-#define MAP_WIDTH 64
-#define MAP_HEIGHT 40
+#define MAP_WIDTH 130
+#define MAP_HEIGHT 34
 
 #define MENU_X 34
 #define MENU_Y 25
@@ -40,13 +40,13 @@ void main() {
 }
 
 void gotoxy(int x, int y) {
-	COORD pos = { x * 2, y };
+	COORD pos = { x, y };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 }
 
 void init() {
 	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
-	cursorInfo.bVisible = 0;
+	cursorInfo.bVisible = FALSE;
 	cursorInfo.dwSize = 1;
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
 
@@ -61,10 +61,10 @@ void draw_map() {
 		printf("бс");
 	}
 
-	for (int i = GAP_HEIGHT + 1; i < MAP_HEIGHT + 1; i++) {
-		gotoxy(GAP_WIDTH, i);
+	for (int i = 0; i < MAP_HEIGHT; i++) {
+		gotoxy(GAP_WIDTH - 4, GAP_HEIGHT + i);
 		printf("бс");
-		gotoxy(GAP_WIDTH + MAP_WIDTH - 1, i);
+		gotoxy(GAP_WIDTH + MAP_WIDTH + 4, GAP_HEIGHT + i);
 		printf("бс");
 	}
 
@@ -206,3 +206,4 @@ void select_menu() {
 		if (input == ENTER && index == 2) { system("cls");  break; }
 	}
 }
+
