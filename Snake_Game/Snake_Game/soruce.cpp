@@ -7,7 +7,20 @@
 #define MAP_WIDTH 25
 #define MAP_HEIGHT 25
 
+#define W 119
+#define S 115
+#define A 97
+#define D 100
+
+#define UP 72
+#define DOWN 80
+#define LEFT 75
+#define RIGHT 77
+#define ENTER 13
+
 int map[MAP_HEIGHT][MAP_WIDTH * 2] = { 0 };
+int score = 0;
+int max_score = 0;
 
 enum {
 	BLACK,
@@ -28,19 +41,29 @@ enum {
 	WHITE,
 };
 
-void SetColor(int backcolor, int fontcolor) {
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), backcolor * 16 + fontcolor);
-}
-
+void set_color(int back_color, int font_color);
 void gotoxy(int x, int y);
 void init();
 void draw_map();
+void draw_info();
+
+int input_key();
+void game_start();
 
 int main() {
 	init();
 	draw_map();
+	draw_info();
+	game_start();
 
+
+	getch();
+	
 	return 0;
+}
+
+void set_color(int back_color, int font_color) {
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), back_color * 16 + font_color);
 }
 
 void gotoxy(int x, int y) {
@@ -55,8 +78,9 @@ void init() {
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
 
 	system("cls");
+	set_color(BLACK, WHITE);
 	printf("Set the console window to full screen and press any key...");
-	_getch();
+	getch();
 	system("cls");
 
 	for (int y = 0; y < MAP_HEIGHT; y++) {
@@ -72,15 +96,15 @@ void init() {
 void draw_map() {
 
 	for (int i = 0; i < MAP_WIDTH * 2 + 4; i++) {
-		SetColor(D_GRAY, WHITE);
+		set_color(D_GRAY, WHITE);
 		gotoxy(GAP_WIDTH - 2 + i, GAP_HEIGHT - 4);
 		printf(" ");
 		gotoxy(GAP_WIDTH - 2 + i, GAP_HEIGHT - 3);
-		printf("@");
+		printf(" ");
 		gotoxy(GAP_WIDTH - 2 + i, GAP_HEIGHT - 2);
 		printf(" ");
-		
-		SetColor(GRAY, WHITE);
+
+		set_color(GRAY, WHITE);
 		gotoxy(GAP_WIDTH - 2 + i, GAP_HEIGHT - 1);
 		printf(" ");
 		gotoxy(GAP_WIDTH - 2 + i, GAP_HEIGHT + MAP_HEIGHT);
@@ -97,13 +121,15 @@ void draw_map() {
 	for (int y = 0; y < MAP_HEIGHT; y++) {
 		for (int x = 0; x < MAP_WIDTH * 2; x++) {
 			gotoxy(GAP_WIDTH + x, GAP_HEIGHT + y);
-			if (map[y][x] == 0) { SetColor(GREEN, WHITE); printf(" "); }
-			if (map[y][x] == 1) { SetColor(D_GREEN, WHITE); printf(" "); }
+			if (map[y][x] == 0) { set_color(GREEN, WHITE); printf(" "); }
+			if (map[y][x] == 1) { set_color(D_GREEN, WHITE); printf(" "); }
 		}
 	}
 
+	// µðÀÚÀÎ È®ÀÎ
+	/*set_color(SKYBLUE, WHITE);
 	gotoxy(GAP_WIDTH + 10, GAP_HEIGHT + 10);
-	SetColor(RED, WHITE); printf(" ");
+	printf(" ");
 	gotoxy(GAP_WIDTH + 11, GAP_HEIGHT + 10);
 	printf(" ");
 	gotoxy(GAP_WIDTH + 12, GAP_HEIGHT + 10);
@@ -114,12 +140,75 @@ void draw_map() {
 	printf(" ");
 	gotoxy(GAP_WIDTH + 15, GAP_HEIGHT + 10);
 	printf(" ");
+
+	set_color(BLUE, WHITE);
 	gotoxy(GAP_WIDTH + 16, GAP_HEIGHT + 10);
 	printf(" ");
 	gotoxy(GAP_WIDTH + 17, GAP_HEIGHT + 10);
 	printf(" ");
 
-	printf("\n");
-	printf("\n");
-	SetColor(BLACK, WHITE);
+	set_color(RED, WHITE);
+	gotoxy(GAP_WIDTH + 22, GAP_HEIGHT + 10);
+	printf(" ");
+	gotoxy(GAP_WIDTH + 23, GAP_HEIGHT + 10);
+	printf(" ");*/
 }
+
+void draw_info() {
+
+	set_color(D_GRAY, WHITE);
+	gotoxy(GAP_WIDTH - 2 + 2, GAP_HEIGHT - 3);
+	printf("SCORE %d", score);
+	gotoxy(GAP_WIDTH - 2 + 37, GAP_HEIGHT - 3);
+	printf("20223070 ±è°æÈÆ");
+
+	int width = 60;
+	int height = 16;
+
+	set_color(BLACK, WHITE);
+	gotoxy(GAP_WIDTH + width + 5, GAP_HEIGHT + height);
+	printf("SNAKE GAME");
+
+	gotoxy(GAP_WIDTH + width, GAP_HEIGHT + height + 3);
+	printf("High Socre : %d", max_score);
+
+	gotoxy(GAP_WIDTH + width, GAP_HEIGHT + height + 5);
+	printf("Move Up    : W or ¡è");
+	gotoxy(GAP_WIDTH + width, GAP_HEIGHT + height + 6);
+	printf("Move Down  : S or ¡é");
+	gotoxy(GAP_WIDTH + width, GAP_HEIGHT + height + 7);
+	printf("Move Left  : A or ¡ç");
+	gotoxy(GAP_WIDTH + width, GAP_HEIGHT + height + 8);
+	printf("Move Right : D or ¡æ");
+}
+
+int input_key() {
+	int input = _getch();
+
+	if (input == 224) { input = _getch(); return input; }
+	else if (input == W) return UP;
+	else if (input == S) return DOWN;
+	else if (input == A) return LEFT;
+	else if (input == D) return RIGHT;
+}
+
+void game_start() {
+	int location_x = GAP_WIDTH + MAP_WIDTH - 5;
+	int location_y = (GAP_HEIGHT + 3 + MAP_HEIGHT) / 2 + 1;
+
+	set_color(BLUE, WHITE);
+	gotoxy(location_x, location_y);
+	printf(" ");
+	gotoxy(location_x + 1, location_y);
+	printf(" ");
+
+	while (true) {
+		if (input_key() == RIGHT) {
+			gotoxy(GAP_WIDTH - 2, GAP_HEIGHT + MAP_HEIGHT + 1);
+			set_color(BLACK, WHITE);
+			printf("Start Game!");
+			break;
+		}
+	}
+}
+
