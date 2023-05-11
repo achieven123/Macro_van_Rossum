@@ -26,7 +26,6 @@ typedef int element;
 typedef struct LinkedListNode {
 	element x;
 	element y;
-	int direction;
 	int length;
 	LinkedListNode* link;
 } LinkedListNode;
@@ -73,7 +72,7 @@ void draw_info();
 int input_key();
 void game_start();
 void create_snake();
-LinkedListNode* create_body(LinkedListNode* head);
+LinkedListNode* create_body(LinkedListNode* head, int dir);
 
 int main() {
 	init();
@@ -218,6 +217,12 @@ void game_start() {
 	int location_x = GAP_WIDTH + MAP_WIDTH - 5;
 	int location_y = (GAP_HEIGHT + 3 + MAP_HEIGHT) / 2 + 1;
 
+	set_color(BLUE, WHITE);
+	gotoxy(location_x, location_y);
+	printf(" ");
+	gotoxy(location_x + 1, location_y);
+	printf(" ");
+
 	while (true) {
 		if (input_key() == RIGHT) {
 			set_color(BLACK, WHITE);
@@ -232,34 +237,39 @@ void game_start() {
 
 void create_snake() {
 	LinkedListNode* head = (LinkedListNode*)malloc(sizeof(LinkedListNode));
-	head->direction = RIGHT;
-	
+	head->x = GAP_WIDTH + MAP_WIDTH - 5;
+	head->y = (GAP_HEIGHT + 3 + MAP_HEIGHT) / 2 + 1;
+
+	int dir = RIGHT;
+
 	while (true) {
-		int dir = head->direction;
 		int input = input_key();
 
 		if (input == UP || input == DOWN || input == LEFT || input == RIGHT) {
 			if ((input != UP && dir == DOWN) || (input != DOWN && dir == UP) ||
 				(input != LEFT && dir == RIGHT) || (input != RIGHT && dir == LEFT)) {
-				head->direction = input;
+				dir = input;
 
-				create_body(head);
+				head = create_body(head, dir);
 
 				set_color(BLACK, WHITE);
 				gotoxy(GAP_WIDTH - 2, GAP_HEIGHT + MAP_HEIGHT + 1);
 				printf("키 입력이 정상 %d", input);
 			}
 		}
-		
+
 		if (input == ESC) break;
 	}
 }
 
-LinkedListNode* create_body(LinkedListNode* head) {
+LinkedListNode* create_body(LinkedListNode* head, int dir) {
 	LinkedListNode* p = (LinkedListNode*)malloc(sizeof(LinkedListNode));
+	printf(" %d", head->x);
+	printf(" %d", head->y);
 
-	p->link = pre->link;
-	pre->link = p;
+
+	//p->link = pre->link;
+	//pre->link = p;
 
 	return head;
 }
