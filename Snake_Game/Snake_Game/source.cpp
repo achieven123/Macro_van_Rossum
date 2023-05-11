@@ -8,6 +8,7 @@
 #define DOWN 80
 #define LEFT 75
 #define RIGHT 77
+#define ENTER 13
 #define ESC 27
 
 #define GAP_WIDTH 4
@@ -19,21 +20,23 @@
 #define MENU_Y 25
 
 void gotoxy(int x, int y);
+int input_key();
+
 void init();
 void draw_map();
 void draw_title();
 void start_game();
 
-int input_key();
+void draw_menu(int index);
+void select_menu();
 
-int main() {
+void main() {
 	init();
 	draw_map();
 	draw_title();
+	draw_menu(0);
+	select_menu();
 	getch();
-	start_game();
-
-	_getch();
 }
 
 void gotoxy(int x, int y) {
@@ -159,18 +162,34 @@ int input_key() {
 		input = _getch();
 		return input;
 	}
+	else if (input == ENTER) {
+		return input;
+	}
 	else return 0;
 }
 
-void draw_menu(int x, int y, int index) {
-	gotoxy(x, y);
-	printf("게임시작");
+void draw_menu(int index) {
 
-	gotoxy(x, y + 1);
-	printf("게임방법");
+	for (int idx = 0; idx < 3; idx++) {
+		if (idx == index) SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
 
-	gotoxy(x + 1, y + 2);
-	printf("종료");
+		switch (idx) {
+		case 0:
+			gotoxy(MENU_X, MENU_Y);
+			printf("게임시작");
+			break;
+		case 1:
+			gotoxy(MENU_X, MENU_Y + 1);
+			printf("게임방법");
+			break;
+		case 2:
+			gotoxy(MENU_X + 1, MENU_Y + 2);
+			printf("종료");
+			break;
+		}
+
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+	}
 }
 
 void select_menu() {
@@ -180,12 +199,10 @@ void select_menu() {
 	while (true) {
 		input = input_key();
 
-		if (input == UP) index = abs(index - 1) % 3;
-		if (input == DOWN) index = abs(index + 1) % 3;
-
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10);
-		}
-
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+		if (input == UP && index > 0) { draw_menu(--index); }
+		if (input == DOWN && index < 3) { draw_menu(++index); }
+		if (input == ENTER && index == 0) { start_game(); break; }
+		if (input == ENTER && index == 1) { start_game(); break; }
+		if (input == ENTER && index == 2) { system("cls");  break; }
 	}
 }
