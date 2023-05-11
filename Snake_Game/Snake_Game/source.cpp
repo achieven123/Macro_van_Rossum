@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <conio.h>
 #include <math.h>
+#include <time.h>
 
 #define UP 72
 #define DOWN 80
@@ -30,6 +31,7 @@ char game_title[9][81] = {
 	"                                                                                ",
 	"================================================================================"
 };
+int score = 0;
 
 void gotoxy(int x, int y);
 int input_key();
@@ -37,7 +39,7 @@ int input_key();
 void init();
 void draw_map();
 void draw_title();
-void start_game();
+void game_start();
 
 void draw_menu(int index);
 void select_menu();
@@ -48,7 +50,7 @@ void main() {
 	draw_title();
 	draw_menu(0);
 	select_menu();
-	getch();
+	_getch();
 }
 
 void gotoxy(int x, int y) {
@@ -63,7 +65,7 @@ void init() {
 	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
 
 	printf("Set the console window to full screen and press any key...");
-	getch();
+	_getch();
 	system("cls");
 }
 
@@ -98,7 +100,7 @@ void draw_title() {
 	gotoxy(28, 18); printf("================================================================================");
 }
 
-void start_game() {
+void game_start() {
 	int delay = 100;
 
 	for (int i = 0; i < 3; i++) { gotoxy(MENU_X, MENU_Y + i); printf("        "); }
@@ -124,7 +126,7 @@ void start_game() {
 	gotoxy(28, 16); printf("================================================================================");
 	gotoxy(28, 17); printf("                                                                                ");
 	gotoxy(28, 18); printf("                                                                                ");
-	
+
 	Sleep(delay);
 	gotoxy(28, 10); printf("                                                                                ");
 	gotoxy(28, 11); printf("                                                                                ");
@@ -161,6 +163,22 @@ void start_game() {
 
 	Sleep(delay);
 	gotoxy(28, 14); printf("                                    OOOOOOO0                                    ");
+}
+
+void game_over() {
+	gotoxy(28, 10); printf("================================================================================");
+	gotoxy(28, 11); printf("                                                                                ");
+	gotoxy(28, 12); printf("  ######   #####  ###    ### #######     ######  ##        ## ######   #######  ");
+	gotoxy(28, 13); printf(" ##       ##   ## ####  #### ##         ##    ##  ##      ##  ##   ##  ##       ");
+	gotoxy(28, 14); printf(" ##   ### ####### ## #### ## #######    ##    ##   ##    ##   #######  #######  ");
+	gotoxy(28, 15); printf(" ##    ## ##   ## ##  ##  ## ##         ##    ##    ##  ##    ##   ##  ##       ");
+	gotoxy(28, 16); printf("  ######  ##   ## ##      ## #######     ######      ####     ##    ## #######  ");
+	gotoxy(28, 17); printf("                                                                                ");
+	gotoxy(28, 18); printf("================================================================================");
+
+	gotoxy(MENU_X, MENU_Y); printf("Score : %d", score);
+	gotoxy(MENU_X, MENU_Y + 1); printf("Time : %d", );
+	gotoxy(MENU_X, MENU_Y + 2); printf("        ");
 }
 
 int input_key() {
@@ -208,10 +226,25 @@ void select_menu() {
 		input = input_key();
 
 		if (input == UP && index > 0) { draw_menu(--index); }
-		if (input == DOWN && index < 3) { draw_menu(++index); }
-		if (input == ENTER && index == 0) { start_game(); break; }
-		if (input == ENTER && index == 1) { start_game(); break; }
+		if (input == DOWN && index < 2) { draw_menu(++index); }
+		if (input == ENTER && index == 0) { game_start(); break; }
+		if (input == ENTER && index == 1) { game_over(); break; }
 		if (input == ENTER && index == 2) { system("cls");  break; }
 	}
 }
 
+double start_time() {
+	double result;
+
+	static time_t start = time(NULL);
+
+	return (double)start;
+}
+
+int end_time(double ) {
+
+	time_t end = time(NULL);
+
+	result = (double)(end - start);
+
+}
