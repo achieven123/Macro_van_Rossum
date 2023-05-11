@@ -4,8 +4,8 @@
 
 #define GAP_WIDTH 4
 #define GAP_HEIGHT 2
-#define MAP_WIDTH 64
-#define MAP_HEIGHT 32
+#define MAP_WIDTH 70
+#define MAP_HEIGHT 35
 
 enum {
 	BLACK,
@@ -29,11 +29,6 @@ enum {
 void SetColor(int backcolor, int fontcolor) {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), backcolor * 16 + fontcolor);
 }
-
-//int map[32][64] = {
-//	{ 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1},
-//	{ 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0},
-//};
 
 void gotoxy(int x, int y);
 void draw_map();
@@ -67,10 +62,16 @@ void draw_map() {
 		gotoxy(GAP_WIDTH, GAP_HEIGHT + i);
 		printf("  ");
 
-		for (int j = 2; j < MAP_WIDTH + 1; j++) {
-			SetColor(RED, WHITE);
+		for (int j = 2; j < MAP_WIDTH + 1; j += 4) {
+			SetColor(GREEN, WHITE);
 			gotoxy(GAP_WIDTH + j, GAP_HEIGHT + i + 1);
-			printf("@@");
+			printf("  ");
+		}
+
+		for (int j = 4; j < MAP_WIDTH + 1; j += 4) {
+			SetColor(D_GREEN, WHITE);
+			gotoxy(GAP_WIDTH + j, GAP_HEIGHT + i + 1);
+			printf("  ");
 		}
 
 		SetColor(GRAY, WHITE);
