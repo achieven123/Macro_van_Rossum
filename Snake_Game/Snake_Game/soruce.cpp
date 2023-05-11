@@ -17,6 +17,8 @@
 #define DOWN 80
 #define LEFT 75
 #define RIGHT 77
+
+#define ESC 27
 #define ENTER 13
 
 typedef int element;
@@ -238,19 +240,22 @@ void game_start() {
 void create_snake() {
 	LinkedListNode* head = (LinkedListNode*)malloc(sizeof(LinkedListNode));
 	head->direction = RIGHT;
-	printf("adf");
 
 	while (true) {
 		int dir = head->direction;
 		int input = input_key();
-		
-		if ((input != UP && dir == DOWN) || (input != DOWN && dir == UP) ||
-			(input != LEFT && dir == RIGHT) || (input != RIGHT && dir == LEFT)) {
-			head->direction = input;
 
-			set_color(BLACK, WHITE);
-			gotoxy(GAP_WIDTH - 2, GAP_HEIGHT + MAP_HEIGHT + 1);
-			printf("키 입력이 정상 %d", input);
+		if (input == UP || input == DOWN || input == LEFT || input == RIGHT) {
+			if ((input != UP && dir == DOWN) || (input != DOWN && dir == UP) ||
+				(input != LEFT && dir == RIGHT) || (input != RIGHT && dir == LEFT)) {
+				head->direction = input;
+
+				set_color(BLACK, WHITE);
+				gotoxy(GAP_WIDTH - 2, GAP_HEIGHT + MAP_HEIGHT + 1);
+				printf("키 입력이 정상 %d", input);
+			}
 		}
+		
+		if (input == ESC) break;
 	}
 }
