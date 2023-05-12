@@ -66,6 +66,11 @@ enum {
 
 void set_color(int back_color, int font_color);
 void gotoxy(int x, int y);
+int input_key();
+
+void set_block(int x, int y, int color);
+void delete_block(int x, int y);
+
 void game_start();
 void create_snake();
 
@@ -74,11 +79,7 @@ void draw_window();
 void draw_map();
 void draw_info();
 
-int input_key();
 LinkedListNode* create_body(LinkedListNode* head, int dir);
-
-void set_block(int x, int y, int color);
-void delete_block(int x, int y);
 
 int main() {
 	init();
@@ -100,23 +101,14 @@ void gotoxy(int x, int y) {
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 }
 
-void init() {
-	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
-	cursorInfo.bVisible = FALSE;
-	cursorInfo.dwSize = 1;
-	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+int input_key() {
+	int input = _getch();
 
-	system("cls");
-	set_color(BLACK, WHITE);
-	printf("Set the console window to full screen and press any key...");
-	getch();
-	system("cls");
-
-	for (int y = 0; y < MAP_HEIGHT; y++) {
-		for (int x = 0; x < MAP_WIDTH; x++) {
-			if ((x + y) % 2 != 0)  map[y][x] = 1;
-		}
-	}
+	if (input == 224) { input = _getch(); return input; }
+	else if (input == W) return UP;
+	else if (input == S) return DOWN;
+	else if (input == A) return LEFT;
+	else if (input == D) return RIGHT;
 }
 
 void set_block(int x, int y, int color) {
@@ -136,13 +128,60 @@ void delete_block(int x, int y) {
 	printf(" ");
 }
 
+void init() {
+	//커서 숨기기
+	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
+	cursorInfo.bVisible = FALSE;
+	cursorInfo.dwSize = 1;
+	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &cursorInfo);
+
+	//윈도우 창 최대화 메시지
+	system("cls");
+	set_color(BLACK, WHITE);
+	printf("Set the console window to full screen and press any key...");
+	getch();
+	system("cls");
+
+	//맵 배열 생성
+	for (int y = 0; y < MAP_HEIGHT; y++) {
+		for (int x = 0; x < MAP_WIDTH; x++) {
+			if ((x + y) % 2 != 0)  map[y][x] = 1;
+		}
+	}
+}
+
+void draw_window() {
+	for (int i = 0; i < MAP_WIDTH * 2 + 4; i++) {
+		set_color(D_GRAY, WHITE);
+		gotoxy(GAP_WIDTH - THICKNESS + i, GAP_HEIGHT - 4);
+		printf(" ");
+		gotoxy(GAP_WIDTH - THICKNESS + i, GAP_HEIGHT - 3);
+		printf(" ");
+		gotoxy(GAP_WIDTH - THICKNESS + i, GAP_HEIGHT - 2);
+		printf(" ");
+
+		set_color(GRAY, WHITE);
+		gotoxy(GAP_WIDTH - THICKNESS + i, GAP_HEIGHT - 1);
+		printf(" ");
+		gotoxy(GAP_WIDTH - THICKNESS + i, GAP_HEIGHT + MAP_HEIGHT);
+		printf(" ");
+	}
+
+	for (int i = 0; i < MAP_HEIGHT; i++) {
+		gotoxy(GAP_WIDTH - THICKNESS, GAP_HEIGHT + i);
+		printf("  ");
+		gotoxy(GAP_WIDTH - THICKNESS + THICKNESS + MAP_WIDTH * 2, GAP_HEIGHT + i);
+		printf("  ");
+	}
+}
+
 void draw_map() {
 	for (int y = 0; y < MAP_HEIGHT; y++) {
 		for (int x = 0; x < MAP_WIDTH; x++) {
 			gotoxy(GAP_WIDTH + x * 2, GAP_HEIGHT + y);
 			if (map[y][x] == 0) { set_color(GREEN, WHITE); printf(" "); }
 			if (map[y][x] == 1) { set_color(D_GREEN, WHITE); printf(" "); }
-			
+
 			gotoxy(GAP_WIDTH + x * 2 + 1, GAP_HEIGHT + y);
 			if (map[y][x] == 0) { set_color(GREEN, WHITE); printf(" "); }
 			if (map[y][x] == 1) { set_color(D_GREEN, WHITE); printf(" "); }
@@ -150,40 +189,11 @@ void draw_map() {
 	}
 }
 
-void draw_window() {
-	int location_x = GAP_WIDTH - THICKNESS;
-	int location_y = GAP_HEIGHT;
-
-	for (int i = 0; i < MAP_WIDTH * 2 + 4; i++) {
-		set_color(D_GRAY, WHITE);
-		gotoxy(location_x + i, location_y - 4);
-		printf(" ");
-		gotoxy(location_x + i, location_y - 3);
-		printf(" ");
-		gotoxy(location_x + i, location_y - 2);
-		printf(" ");
-
-		set_color(GRAY, WHITE);
-		gotoxy(location_x + i, location_y - 1);
-		printf(" ");
-		gotoxy(location_x + i, location_y + MAP_HEIGHT);
-		printf(" ");
-	}
-
-	for (int i = 0; i < MAP_HEIGHT; i++) {
-		gotoxy(location_x, location_y + i);
-		printf("  ");
-		gotoxy(location_x + THICKNESS + MAP_WIDTH * 2, location_y + i);
-		printf("  ");
-	}
-}
-
 void draw_info() {
-
 	set_color(D_GRAY, WHITE);
-	gotoxy(GAP_WIDTH - 2 + 2, GAP_HEIGHT - 3);
+	gotoxy(GAP_WIDTH, GAP_HEIGHT - 3);
 	printf("SCORE %d", score);
-	gotoxy(GAP_WIDTH - 2 + 37, GAP_HEIGHT - 3);
+	gotoxy(GAP_WIDTH + 35, GAP_HEIGHT - 3);
 	printf("20223070 김경훈");
 
 	int width = 60;
@@ -204,16 +214,6 @@ void draw_info() {
 	printf("Move Left  : A or ←");
 	gotoxy(GAP_WIDTH + width, GAP_HEIGHT + height + 8);
 	printf("Move Right : D or →");
-}
-
-int input_key() {
-	int input = _getch();
-
-	if (input == 224) { input = _getch(); return input; }
-	else if (input == W) return UP;
-	else if (input == S) return DOWN;
-	else if (input == A) return LEFT;
-	else if (input == D) return RIGHT;
 }
 
 void game_start() {
@@ -274,4 +274,3 @@ LinkedListNode* create_body(LinkedListNode* head, int dir) {
 
 	return head;
 }
-
