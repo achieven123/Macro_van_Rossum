@@ -340,7 +340,6 @@ void move_forward(LinkedListNode* head, int direction) {
 //	return head;
 //}
 //
-//LinkedListNode* create_body(LinkedListNode* head, int dir) {
 //	LinkedListNode* p = (LinkedListNode*)malloc(sizeof(LinkedListNode));
 //
 //	SNAKE_LENGTH
