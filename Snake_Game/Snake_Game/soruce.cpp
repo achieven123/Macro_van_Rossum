@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <conio.h>
 
+#define THICKNESS 2
 #define GAP_WIDTH 6
 #define GAP_HEIGHT 6
 #define MAP_WIDTH 25
@@ -40,7 +41,7 @@ typedef struct LinkedListNode {
 //	return head;
 //}
 
-int map[MAP_HEIGHT][MAP_WIDTH * 2] = { 0 };
+int map[MAP_HEIGHT][MAP_WIDTH] = { 0 };
 int score = 0;
 int max_score = 0;
 
@@ -65,19 +66,26 @@ enum {
 
 void set_color(int back_color, int font_color);
 void gotoxy(int x, int y);
+void game_start();
+void create_snake();
+
 void init();
+void draw_window();
 void draw_map();
 void draw_info();
 
 int input_key();
-void game_start();
-void create_snake();
 LinkedListNode* create_body(LinkedListNode* head, int dir);
+
+void set_block(int x, int y, int color);
+void delete_block(int x, int y);
 
 int main() {
 	init();
+	draw_window();
 	draw_map();
 	draw_info();
+
 	game_start();
 
 	return 0;
@@ -106,73 +114,68 @@ void init() {
 
 	for (int y = 0; y < MAP_HEIGHT; y++) {
 		for (int x = 0; x < MAP_WIDTH; x++) {
-			if ((x + y) % 2 != 0) {
-				map[y][x * 2] = 1;
-				map[y][x * 2 + 1] = 1;
-			}
+			if ((x + y) % 2 != 0)  map[y][x] = 1;
 		}
 	}
 }
 
+void set_block(int x, int y, int color) {
+	set_color(color, WHITE);
+	gotoxy(GAP_WIDTH + x * 2, GAP_HEIGHT + y);
+	printf(" ");
+	gotoxy(GAP_WIDTH + x * 2 + 1, GAP_HEIGHT + y);
+	printf(" ");
+}
+
+void delete_block(int x, int y) {
+	if (map[GAP_WIDTH + x * 2][GAP_HEIGHT + y] == 0)
+		set_color(GREEN, WHITE);
+	else
+		set_color(D_GREEN, WHITE);
+	gotoxy(GAP_WIDTH + x * 2, GAP_HEIGHT + y);
+	printf(" ");
+}
+
 void draw_map() {
-
-	for (int i = 0; i < MAP_WIDTH * 2 + 4; i++) {
-		set_color(D_GRAY, WHITE);
-		gotoxy(GAP_WIDTH - 2 + i, GAP_HEIGHT - 4);
-		printf(" ");
-		gotoxy(GAP_WIDTH - 2 + i, GAP_HEIGHT - 3);
-		printf(" ");
-		gotoxy(GAP_WIDTH - 2 + i, GAP_HEIGHT - 2);
-		printf(" ");
-
-		set_color(GRAY, WHITE);
-		gotoxy(GAP_WIDTH - 2 + i, GAP_HEIGHT - 1);
-		printf(" ");
-		gotoxy(GAP_WIDTH - 2 + i, GAP_HEIGHT + MAP_HEIGHT);
-		printf(" ");
-	}
-
-	for (int i = 0; i < MAP_HEIGHT; i++) {
-		gotoxy(GAP_WIDTH - 2, GAP_HEIGHT + i);
-		printf("  ");
-		gotoxy(GAP_WIDTH + MAP_WIDTH * 2, GAP_HEIGHT + i);
-		printf("  ");
-	}
-
 	for (int y = 0; y < MAP_HEIGHT; y++) {
-		for (int x = 0; x < MAP_WIDTH * 2; x++) {
-			gotoxy(GAP_WIDTH + x, GAP_HEIGHT + y);
+		for (int x = 0; x < MAP_WIDTH; x++) {
+			gotoxy(GAP_WIDTH + x * 2, GAP_HEIGHT + y);
+			if (map[y][x] == 0) { set_color(GREEN, WHITE); printf(" "); }
+			if (map[y][x] == 1) { set_color(D_GREEN, WHITE); printf(" "); }
+			
+			gotoxy(GAP_WIDTH + x * 2 + 1, GAP_HEIGHT + y);
 			if (map[y][x] == 0) { set_color(GREEN, WHITE); printf(" "); }
 			if (map[y][x] == 1) { set_color(D_GREEN, WHITE); printf(" "); }
 		}
 	}
+}
 
-	// 디자인 확인
-	/*set_color(SKYBLUE, WHITE);
-	gotoxy(GAP_WIDTH + 10, GAP_HEIGHT + 10);
-	printf(" ");
-	gotoxy(GAP_WIDTH + 11, GAP_HEIGHT + 10);
-	printf(" ");
-	gotoxy(GAP_WIDTH + 12, GAP_HEIGHT + 10);
-	printf(" ");
-	gotoxy(GAP_WIDTH + 13, GAP_HEIGHT + 10);
-	printf(" ");
-	gotoxy(GAP_WIDTH + 14, GAP_HEIGHT + 10);
-	printf(" ");
-	gotoxy(GAP_WIDTH + 15, GAP_HEIGHT + 10);
-	printf(" ");
+void draw_window() {
+	int location_x = GAP_WIDTH - THICKNESS;
+	int location_y = GAP_HEIGHT;
 
-	set_color(BLUE, WHITE);
-	gotoxy(GAP_WIDTH + 16, GAP_HEIGHT + 10);
-	printf(" ");
-	gotoxy(GAP_WIDTH + 17, GAP_HEIGHT + 10);
-	printf(" ");
+	for (int i = 0; i < MAP_WIDTH * 2 + 4; i++) {
+		set_color(D_GRAY, WHITE);
+		gotoxy(location_x + i, location_y - 4);
+		printf(" ");
+		gotoxy(location_x + i, location_y - 3);
+		printf(" ");
+		gotoxy(location_x + i, location_y - 2);
+		printf(" ");
 
-	set_color(RED, WHITE);
-	gotoxy(GAP_WIDTH + 22, GAP_HEIGHT + 10);
-	printf(" ");
-	gotoxy(GAP_WIDTH + 23, GAP_HEIGHT + 10);
-	printf(" ");*/
+		set_color(GRAY, WHITE);
+		gotoxy(location_x + i, location_y - 1);
+		printf(" ");
+		gotoxy(location_x + i, location_y + MAP_HEIGHT);
+		printf(" ");
+	}
+
+	for (int i = 0; i < MAP_HEIGHT; i++) {
+		gotoxy(location_x, location_y + i);
+		printf("  ");
+		gotoxy(location_x + THICKNESS + MAP_WIDTH * 2, location_y + i);
+		printf("  ");
+	}
 }
 
 void draw_info() {
@@ -214,14 +217,12 @@ int input_key() {
 }
 
 void game_start() {
-	int location_x = GAP_WIDTH + MAP_WIDTH - 5;
+	int location_x = 3;
 	int location_y = (GAP_HEIGHT + 3 + MAP_HEIGHT) / 2 + 1;
 
-	set_color(BLUE, WHITE);
-	gotoxy(location_x, location_y);
-	printf(" ");
-	gotoxy(location_x + 1, location_y);
-	printf(" ");
+	set_block(0, 0, SKYBLUE);
+	set_block(3, 3, BLUE);
+	delete_block(3, 3);
 
 	while (true) {
 		if (input_key() == RIGHT) {
@@ -273,3 +274,4 @@ LinkedListNode* create_body(LinkedListNode* head, int dir) {
 
 	return head;
 }
+
