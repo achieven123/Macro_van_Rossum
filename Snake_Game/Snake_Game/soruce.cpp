@@ -49,7 +49,7 @@ int map[MAP_HEIGHT][MAP_WIDTH] = { 0 };
 int score = 0;
 int max_score = 0;
 int length = 0;
-int speed = 150;
+int speed = 500;
 
 enum {
 	BLACK,
@@ -77,7 +77,6 @@ int input_key();
 void set_block(int x, int y, int color);
 void delete_block(int x, int y);
 
-
 void init();
 void draw_window();
 void draw_map();
@@ -85,14 +84,14 @@ void draw_info();
 
 void game_start();
 void init_snake(LinkedListNode* head, LinkedListNode* tail);
-void move_forward(LinkedListNode* head, LinkedListNode* tail, int direction);
+void insert_front(LinkedListNode* head, LinkedListNode* tail, int direction);
 void delete_node(LinkedListNode* head, LinkedListNode* removed);
 
-void print_list(LinkedListNode* head) {
+void print_list(LinkedListNode* head, LinkedListNode* tail) {
 	LinkedListNode* p;
 
-	for (p = head->right_link; p != head; p = p->right_link)
-		printf("<-data->");
+	for (p = head->right_link; p != NULL; p = p->right_link)
+		printf("<-%d %d->", p->location_x, p->location_y);
 	printf("\n");
 }
 
@@ -244,13 +243,13 @@ void game_start() {
 				if ((input != UP && dir == DOWN) || (input != DOWN && dir == UP) ||
 					(input != LEFT && dir == RIGHT) || (input != RIGHT && dir == LEFT)) {
 					dir = input;
-					//change_dir(dir);
 				}
 			}
 		}
+
 		gotoxy(0, 0);
-		print_list(head);
-		move_forward(head, tail, dir);
+		print_list(head, tail);
+		//insert_front(head, tail, dir);
 		Sleep(speed);
 	}
 }
@@ -261,23 +260,28 @@ void init_snake(LinkedListNode* head, LinkedListNode* tail) {
 	tail->location_x = START_POINT_X - 1;
 	tail->location_y = START_POINT_Y;
 
-	head->left_link = tail;
-	head->right_link = head;
-	tail->left_link = tail;
-	tail->right_link = head;
+	head->left_link = NULL;
+	head->right_link = tail;
+	tail->left_link = head;
+	tail->right_link = NULL;
 
 	set_block(head->location_x, head->location_y, BLUE);
 }
 
-void move_forward(LinkedListNode* head, LinkedListNode* tail, int direction) {
+void insert_front(LinkedListNode* head, LinkedListNode* tail, int direction) {
 	LinkedListNode* new_node = (LinkedListNode*)malloc(sizeof(LinkedListNode));
 
 	new_node->location_x = head->location_x;
 	new_node->location_y = head->location_y;
-	new_node->left_link = head;
+
+	new_node->right_link = head;
+	head->left_link = new_node;
+	head = new_node;
+
+	/*new_node->left_link = head;
 	new_node->right_link = head->right_link;
 	head->right_link->left_link = new_node;
-	head->right_link = new_node;
+	head->right_link = new_node;*/
 
 	if (direction == UP) head->location_y--;
 	if (direction == DOWN) head->location_y++;
@@ -286,11 +290,11 @@ void move_forward(LinkedListNode* head, LinkedListNode* tail, int direction) {
 
 	set_block(head->location_x, head->location_y, BLUE);
 
-	delete_node(head, tail->left_link);
+	//delete_node(head, tail->left_link);
 }
 
 void delete_node(LinkedListNode* head, LinkedListNode* removed) {
-	if (removed == head) return;
+	//if (removed == head) return;
 
 	//delete_block(removed->location_x, removed->location_y);
 

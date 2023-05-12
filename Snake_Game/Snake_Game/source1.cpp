@@ -76,7 +76,7 @@ void game_start();
 void game_over();
 
 void main() {
-	SetColor(GRAY, WHITE);
+	//SetColor(GRAY, WHITE);
 	//SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);
 	printf("                               \n");
 	//printf("■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■\n");
@@ -87,10 +87,10 @@ void main() {
 	//printf("%d", _getch());
 	//_getch();
 	//while (true) {
-		//init();
-		//draw_map();
-		//draw_title();
-		//select_menu();
+		init();
+		draw_map();
+		draw_title();
+		select_menu();
 	//}
 }
 
