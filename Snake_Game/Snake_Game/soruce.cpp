@@ -3,12 +3,6 @@
 #include <Windows.h>
 #include <conio.h>
 
-#define THICKNESS 2
-#define GAP_WIDTH 6
-#define GAP_HEIGHT 6
-#define MAP_WIDTH 25
-#define MAP_HEIGHT 25
-
 #define W 119
 #define S 115
 #define A 97
@@ -22,13 +16,23 @@
 #define ESC 27
 #define ENTER 13
 
+#define THICKNESS 2
+#define GAP_WIDTH 6
+#define GAP_HEIGHT 6
+#define MAP_WIDTH 25
+#define MAP_HEIGHT 25
+
+#define SNAKE_LENGTH 5
+#define START_POINT_X 12
+#define START_POINT_Y 12
+
 typedef int element;
 
 typedef struct LinkedListNode {
-	element x;
-	element y;
-	int length;
-	LinkedListNode* link;
+	element location_x;
+	element location_y;
+	LinkedListNode* left_link;
+	LinkedListNode* right_link;
 } LinkedListNode;
 //
 //LinkedListNode* InsertFirstNode(LinkedListNode* head, element value) {
@@ -44,6 +48,8 @@ typedef struct LinkedListNode {
 int map[MAP_HEIGHT][MAP_WIDTH] = { 0 };
 int score = 0;
 int max_score = 0;
+int length = 0;
+int speed = 150;
 
 enum {
 	BLACK,
@@ -71,14 +77,19 @@ int input_key();
 void set_block(int x, int y, int color);
 void delete_block(int x, int y);
 
-void game_start();
-void create_snake();
 
 void init();
 void draw_window();
 void draw_map();
 void draw_info();
 
+void game_start();
+void init_snake();
+void move_forward(int direction);
+void change_dir(int direction);
+
+void create_snake();
+LinkedListNode* create_head(LinkedListNode* head, int x, int y, int dir);
 LinkedListNode* create_body(LinkedListNode* head, int dir);
 
 int main() {
@@ -114,18 +125,14 @@ int input_key() {
 void set_block(int x, int y, int color) {
 	set_color(color, WHITE);
 	gotoxy(GAP_WIDTH + x * 2, GAP_HEIGHT + y);
-	printf(" ");
-	gotoxy(GAP_WIDTH + x * 2 + 1, GAP_HEIGHT + y);
-	printf(" ");
+	printf("  ");
 }
 
 void delete_block(int x, int y) {
-	if (map[GAP_WIDTH + x * 2][GAP_HEIGHT + y] == 0)
-		set_color(GREEN, WHITE);
-	else
-		set_color(D_GREEN, WHITE);
+	if (map[GAP_WIDTH + x][GAP_HEIGHT + y] == 0) set_color(GREEN, WHITE);
+	else set_color(D_GREEN, WHITE);
 	gotoxy(GAP_WIDTH + x * 2, GAP_HEIGHT + y);
-	printf(" ");
+	printf("  ");
 }
 
 void init() {
@@ -217,60 +224,132 @@ void draw_info() {
 }
 
 void game_start() {
-	int location_x = 3;
-	int location_y = (GAP_HEIGHT + 3 + MAP_HEIGHT) / 2 + 1;
-
-	set_block(0, 0, SKYBLUE);
-	set_block(3, 3, BLUE);
-	delete_block(3, 3);
-
-	while (true) {
-		if (input_key() == RIGHT) {
-			set_color(BLACK, WHITE);
-			gotoxy(GAP_WIDTH - 2, GAP_HEIGHT + MAP_HEIGHT + 1);
-			printf("Start Game!");
-
-			create_snake();
-			break;
-		}
-	}
-}
-
-void create_snake() {
 	LinkedListNode* head = (LinkedListNode*)malloc(sizeof(LinkedListNode));
-	head->x = GAP_WIDTH + MAP_WIDTH - 5;
-	head->y = (GAP_HEIGHT + 3 + MAP_HEIGHT) / 2 + 1;
+	init_snake();
 
 	int dir = RIGHT;
-
+	
 	while (true) {
-		int input = input_key();
 
-		if (input == UP || input == DOWN || input == LEFT || input == RIGHT) {
-			if ((input != UP && dir == DOWN) || (input != DOWN && dir == UP) ||
-				(input != LEFT && dir == RIGHT) || (input != RIGHT && dir == LEFT)) {
-				dir = input;
+		if (kbhit()) {
+			int input = input_key();
 
-				head = create_body(head, dir);
+			if (input == ESC) break;
 
-				set_color(BLACK, WHITE);
-				gotoxy(GAP_WIDTH - 2, GAP_HEIGHT + MAP_HEIGHT + 1);
-				printf("키 입력이 정상 %d", input);
+			if (input == UP || input == DOWN || input == LEFT || input == RIGHT) {
+				if ((input != UP && dir == DOWN) || (input != DOWN && dir == UP) ||
+					(input != LEFT && dir == RIGHT) || (input != RIGHT && dir == LEFT)) {
+					dir = input;
+					//change_dir(dir);
+				}
 			}
 		}
 
-		if (input == ESC) break;
+		move_forward(dir);
+		Sleep(speed);
 	}
 }
 
-LinkedListNode* create_body(LinkedListNode* head, int dir) {
-	LinkedListNode* p = (LinkedListNode*)malloc(sizeof(LinkedListNode));
-	printf(" %d", head->x);
-	printf(" %d", head->y);
+void init_snake(LinkedListNode* head) {
+	head->location_x = START_POINT_X;
+	head->location_y = START_POINT_Y;
 
+	head->left_link = head;
+	head->right_link = head;
 
-	//p->link = pre->link;
-	//pre->link = p;
-
-	return head;
+	set_block(head->location_x, head->location_y, BLUE);
 }
+
+void move_forward(LinkedListNode* head, int direction) {
+	LinkedListNode* new_node = (LinkedListNode*)malloc(sizeof(LinkedListNode));
+
+	new_node->location_x = head->location_x;
+	new_node->location_y = head->location_y;
+
+	if (direction == UP) new_node->location_y--;
+	if (direction == DOWN) new_node->location_y++;
+	if (direction == LEFT) new_node->location_x--;
+	if (direction == RIGHT) new_node->location_x++;
+	
+	set_block(new_node->location_x, new_node->location_y, BLUE);
+
+
+
+
+
+	//if (direction == UP) head->location_y--;
+	//if (direction == DOWN) head->location_y++;
+	//if (direction == LEFT) head->location_x--;
+	//if (direction == RIGHT) head->location_x++;
+
+	//
+
+
+
+
+	//delete_block(head->location_x, head->location_y);
+
+	//if (direction == UP) head->location_y--;
+	//if (direction == DOWN) head->location_y++;
+	//if (direction == LEFT) head->location_x--;
+	//if (direction == RIGHT) head->location_x++;
+
+	//set_block(head->location_x, head->location_y, BLUE);
+}
+
+
+//void create_snake() {
+//	LinkedListNode* head = NULL;
+//	LinkedListNode* tail = NULL;
+//
+//	int x = GAP_WIDTH + START_POINT_X;
+//	int y = GAP_HEIGHT + 3 + START_POINT_Y;
+//	int dir = RIGHT;
+
+//	while (true) {
+//
+//		if (input == UP || input == DOWN || input == LEFT || input == RIGHT) {
+//			if ((input != UP && dir == DOWN) || (input != DOWN && dir == UP) ||
+//				(input != LEFT && dir == RIGHT) || (input != RIGHT && dir == LEFT)) {
+//				dir = input;
+//
+//				head = create_head(head, x, y, dir);
+//
+//				set_color(BLACK, WHITE);
+//				gotoxy(GAP_WIDTH - 2, GAP_HEIGHT + MAP_HEIGHT + 1);
+//				printf("키 입력이 정상 %d", input);
+//			}
+//		}
+//
+//		if (input == ESC) break;
+//	}
+//}
+//
+//LinkedListNode* create_head(LinkedListNode* head, int x, int y, int dir) {
+//	LinkedListNode* p = (LinkedListNode*)malloc(sizeof(LinkedListNode));
+//	set_color(BLACK, WHITE);
+//	gotoxy(GAP_WIDTH - 2, GAP_HEIGHT + MAP_HEIGHT + 1);
+//
+//	p->location_x = x;
+//	p->location_y = y;
+//	head->link = head;
+//	head = p;
+//
+//	length += 1;
+//
+//	return head;
+//}
+//
+//LinkedListNode* create_body(LinkedListNode* head, int dir) {
+//	LinkedListNode* p = (LinkedListNode*)malloc(sizeof(LinkedListNode));
+//
+//	SNAKE_LENGTH
+//
+//	printf(" %d", head->x);
+//	printf(" %d", head->y);
+//
+//	p->link = pre->link;
+//	pre->link = p;
+//
+//	return head;
+//}
