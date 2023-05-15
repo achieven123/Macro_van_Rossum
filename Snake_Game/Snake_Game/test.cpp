@@ -53,7 +53,7 @@ void game_start() {
 
 			if (input == ESC) break;
 
-			if (input == UP || input == DOWN || input == LEFT || input == RIGHT) {
+			if (input == UP || input == DOWN || input == LEFT || input == RIGHT) {	
 				if ((input != UP && dir == DOWN) || (input != DOWN && dir == UP) ||
 					(input != LEFT && dir == RIGHT) || (input != RIGHT && dir == LEFT)) {
 					dir = input;

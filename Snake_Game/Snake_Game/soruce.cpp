@@ -91,10 +91,16 @@ int main() {
 	draw_window();
 	draw_map();
 	draw_info();
-	gotoxy(0, 0);
+
+	/*gotoxy(0, 0);
 	printf("안뇽");
-	//game_start();(
+
+	set_block(0, 0, WHITE);*/
+
+	game_start();
+
 	_getch();
+
 	return 0;
 }
 
@@ -181,6 +187,8 @@ void draw_info() {
 	gotoxy(x, y + 3); printf("Move Down  : S or ↓");
 	gotoxy(x, y + 4); printf("Move Left  : A or ←");
 	gotoxy(x, y + 5); printf("Move Right : D or →");
+
+	gotoxy(x, y + 6); printf("Game Stop	 : ESC");
 }
 
 int input_key() {
@@ -193,3 +201,38 @@ int input_key() {
 	else if (input == D) return RIGHT;
 }
 
+void game_start() {
+	int dir = RIGHT;
+	int a = 0;
+	while (true) {
+		if (_kbhit()) {
+			int input = input_key();
+
+			switch (input) {
+			case UP:
+			case DOWN:
+			case LEFT:
+			case RIGHT:
+				if ((input != UP && dir == DOWN) ||
+					(input != DOWN && dir == UP) ||
+					(input != LEFT && dir == RIGHT) ||
+					(input != RIGHT && dir == LEFT)) {
+					dir = input;
+				}
+				break;
+
+			case ESC:
+				set_color(BLACK, RED);
+				gotoxy(-2, map_height + 2);
+				printf("일시정지 : ");
+				system("Pause");
+				set_color(BLACK, WHITE);
+				gotoxy(-2, map_height + 2);
+				for (int y = 0; y < 50; y++) printf(" ");
+				break;
+			}
+		}
+
+
+	}
+}
