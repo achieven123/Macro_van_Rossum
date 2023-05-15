@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <Windows.h>
 #include <conio.h>
-
+#pragma region ют╥б
 #define W 119
 #define S 115
 #define A 97
@@ -15,8 +15,8 @@
 
 #define ESC 27
 #define ENTER 13
-
-#define THICKNESS 2
+#pragma endregion
+#define THICKNESS 3
 #define GAP_WIDTH 6
 #define GAP_HEIGHT 6
 #define MAP_WIDTH 25
