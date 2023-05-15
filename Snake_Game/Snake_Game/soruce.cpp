@@ -20,24 +20,33 @@
 
 #pragma endregion
 
-#pragma region Draw Map
+#pragma region Map Size
 
-#define GAP_X 3
-#define GAP_Y 3
-#define MAP_WIDTH 25
-#define MAP_HEIGHT 25
+#define GAP_X 4
+#define GAP_Y 2
+#define MAX_WIDTH 100
+#define MAX_HEIGHT 100
+
+#pragma endregion
+
+#pragma region Function Prototype
+
+void set_color(int back_color, int font_color);
+void gotoxy(int x, int y);
+int input_key();
+void set_block(int x, int y, int color);
+void delete_block(int x, int y);
+
+void init();
+void draw_window();
+void draw_map();
+void draw_info();
+
+void game_start();
 
 #pragma endregion 
 
-#define SNAKE_LENGTH 5
-#define START_POINT_X 12
-#define START_POINT_Y 12
-
-int map[MAP_HEIGHT][MAP_WIDTH] = { 0 };
-int score = 0;
-int max_score = 0;
-int length = 0;
-int speed = 500;
+#pragma region Enum & Struct
 
 enum {
 	BLACK,
@@ -55,30 +64,37 @@ enum {
 	RED,
 	VIOLET,
 	YELLOW,
-	WHITE,
+	WHITE
 };
 
-void set_color(int back_color, int font_color);
-void gotoxy(int x, int y);
-int input_key();
+typedef int element;
 
-void set_block(int x, int y, int color);
-void delete_block(int x, int y);
+typedef struct LinkedListNode {
+	element x;
+	element y;
+	LinkedListNode* left;
+	LinkedListNode* right;
+} LinkedListNode;
 
-void init();
-void draw_window();
-void draw_map();
-void draw_info();
+#pragma endregion
 
-void game_start();
+int map[MAX_HEIGHT][MAX_WIDTH];
+int snake[MAX_HEIGHT][MAX_WIDTH];
+int map_width = 25;
+int map_height = 25;
+int current_score;
+int max_score;
+int speed;
 
 int main() {
 	init();
 	draw_window();
 	draw_map();
 	draw_info();
-
-	game_start();
+	gotoxy(0, 0);
+	printf("¾È´¨");
+	//game_start();(
+	_getch();
 	return 0;
 }
 
@@ -87,7 +103,7 @@ void set_color(int back_color, int font_color) {
 }
 
 void gotoxy(int x, int y) {
-	COORD pos = { x, y };
+	COORD pos = { x + GAP_X + 2, y + GAP_Y + 4 };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 }
 
@@ -103,15 +119,14 @@ int input_key() {
 
 void set_block(int x, int y, int color) {
 	set_color(color, WHITE);
-	gotoxy(GAP_X + x * 2, GAP_Y + y);
+	gotoxy(x * 2, +y);
 	printf("  ");
+	set_color(BLACK, WHITE);
 }
 
 void delete_block(int x, int y) {
-	if (map[GAP_X + x][GAP_Y + y] == 0) set_color(GREEN, WHITE);
-	else set_color(D_GREEN, WHITE);
-	gotoxy(GAP_X + x * 2, GAP_Y + y);
-	printf("  ");
+	if (map[x][y] == 0) set_block(x, y, GREEN);
+	else set_block(x, y, D_GREEN);
 }
 
 void init() {
@@ -129,75 +144,51 @@ void init() {
 	system("cls");
 
 	//¸Ê ¹è¿­ »ý¼º
-	for (int y = 0; y < MAP_HEIGHT; y++) {
-		for (int x = 0; x < MAP_WIDTH; x++) {
+	for (int y = 0; y < MAX_HEIGHT; y++) {
+		for (int x = 0; x < MAX_WIDTH; x++) {
 			if ((x + y) % 2 != 0)  map[y][x] = 1;
 		}
 	}
 }
 
 void draw_window() {
-	for (int i = 0; i < MAP_WIDTH * 2 + 4; i++) {
-		set_color(D_GRAY, WHITE);
-		gotoxy(GAP_X - THICKNESS + i, GAP_Y - 4);
-		printf(" ");
-		gotoxy(GAP_X - THICKNESS + i, GAP_Y - 3);
-		printf(" ");
-		gotoxy(GAP_X - THICKNESS + i, GAP_Y - 2);
-		printf(" ");
-
-		set_color(GRAY, WHITE);
-		gotoxy(GAP_X - THICKNESS + i, GAP_Y - 1);
-		printf(" ");
-		gotoxy(GAP_X - THICKNESS + i, GAP_Y + MAP_HEIGHT);
-		printf(" ");
+	for (int x = -1, y = -4; x < map_width + 1; x++) {
+		set_block(x, y, D_GRAY);
+		set_block(x, y + 1, D_GRAY);
+		set_block(x, y + 2, D_GRAY);
+		set_block(x, y + 3, GRAY);
+		set_block(x, y + map_height + 4, GRAY);
 	}
 
-	for (int i = 0; i < MAP_HEIGHT; i++) {
-		gotoxy(GAP_X - THICKNESS, GAP_Y + i);
-		printf("  ");
-		gotoxy(GAP_X - THICKNESS + THICKNESS + MAP_WIDTH * 2, GAP_Y + i);
-		printf("  ");
+	for (int x = -1, y = 0; y < map_height; y++) {
+		set_block(x, y, GRAY);
+		set_block(x + map_width + 1, y, GRAY);
 	}
 }
 
 void draw_map() {
-	for (int y = 0; y < MAP_HEIGHT; y++) {
-		for (int x = 0; x < MAP_WIDTH; x++) {
-			gotoxy(GAP_X + x * 2, GAP_Y + y);
-			if (map[y][x] == 0) { set_color(GREEN, WHITE); printf(" "); }
-			if (map[y][x] == 1) { set_color(D_GREEN, WHITE); printf(" "); }
-
-			gotoxy(GAP_X + x * 2 + 1, GAP_Y + y);
-			if (map[y][x] == 0) { set_color(GREEN, WHITE); printf(" "); }
-			if (map[y][x] == 1) { set_color(D_GREEN, WHITE); printf(" "); }
+	for (int y = 0; y < map_height; y++) {
+		for (int x = 0; x < map_width; x++) {
+			delete_block(x, y);
 		}
 	}
 }
 
 void draw_info() {
-	set_color(D_GRAY, WHITE);
-	gotoxy(GAP_X, GAP_Y - 3);
-	printf("SCORE %d", score);
-	gotoxy(GAP_X + 35, GAP_Y - 3);
-	printf("20223070 ±è°æÈÆ");
+	int x = 0;
+	int y = -3;
 
-	int width = 60;
-	int height = 16;
+	set_color(D_GRAY, WHITE);
+	gotoxy(x, y); printf("score %d", current_score);
+	gotoxy(x + map_width * 2 - 15, y); printf("20223070 ±è°æÈÆ");
+
+	x = map_width * 2 + 6;
+	y = map_height - 6;
 
 	set_color(BLACK, WHITE);
-	gotoxy(GAP_X + width + 5, GAP_Y + height);
-	printf("SNAKE GAME");
-
-	gotoxy(GAP_X + width, GAP_Y + height + 3);
-	printf("High Socre : %d", max_score);
-
-	gotoxy(GAP_X + width, GAP_Y + height + 5);
-	printf("Move Up    : W or ¡è");
-	gotoxy(GAP_X + width, GAP_Y + height + 6);
-	printf("Move Down  : S or ¡é");
-	gotoxy(GAP_X + width, GAP_Y + height + 7);
-	printf("Move Left  : A or ¡ç");
-	gotoxy(GAP_X + width, GAP_Y + height + 8);
-	printf("Move Right : D or ¡æ");
+	gotoxy(x, y); printf("High Socre : %d", max_score);
+	gotoxy(x, y + 2); printf("Move Up    : W or ¡è");
+	gotoxy(x, y + 3); printf("Move Down  : S or ¡é");
+	gotoxy(x, y + 4); printf("Move Left  : A or ¡ç");
+	gotoxy(x, y + 5); printf("Move Right : D or ¡æ");
 }
