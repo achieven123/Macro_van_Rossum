@@ -33,7 +33,6 @@
 
 void set_color(int back_color, int font_color);
 void gotoxy(int x, int y);
-int input_key();
 void set_block(int x, int y, int color);
 void delete_block(int x, int y);
 
@@ -42,6 +41,7 @@ void draw_window();
 void draw_map();
 void draw_info();
 
+int input_key();
 void game_start();
 
 #pragma endregion 
@@ -105,16 +105,6 @@ void set_color(int back_color, int font_color) {
 void gotoxy(int x, int y) {
 	COORD pos = { x + GAP_X + 2, y + GAP_Y + 4 };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-}
-
-int input_key() {
-	int input = _getch();
-
-	if (input == 224) { input = _getch(); return input; }
-	else if (input == W) return UP;
-	else if (input == S) return DOWN;
-	else if (input == A) return LEFT;
-	else if (input == D) return RIGHT;
 }
 
 void set_block(int x, int y, int color) {
@@ -192,3 +182,14 @@ void draw_info() {
 	gotoxy(x, y + 4); printf("Move Left  : A or ¡ç");
 	gotoxy(x, y + 5); printf("Move Right : D or ¡æ");
 }
+
+int input_key() {
+	int input = _getch();
+
+	if (input == 224) { input = _getch(); return input; }
+	else if (input == W) return UP;
+	else if (input == S) return DOWN;
+	else if (input == A) return LEFT;
+	else if (input == D) return RIGHT;
+}
+
