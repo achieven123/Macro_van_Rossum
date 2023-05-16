@@ -202,7 +202,7 @@ int input_key() {
 }
 
 void game_start() {
-
+	LinkedListNode* head;
 
 	int dir = RIGHT;
 	int a = 0;
