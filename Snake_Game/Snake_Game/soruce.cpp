@@ -69,12 +69,12 @@ enum {
 
 typedef int element;
 
-typedef struct LinkedListNode {
+typedef struct ListNode {
 	element x;
 	element y;
-	LinkedListNode* left;
-	LinkedListNode* right;
-} LinkedListNode;
+	ListNode* left;
+	ListNode* right;
+} ListNode;
 
 #pragma endregion
 
@@ -202,8 +202,8 @@ int input_key() {
 }
 
 void game_start() {
-	LinkedListNode* head;
-	LinkedListNode* tail;
+	ListNode* head;
+	ListNode* tail;
 
 
 
@@ -243,6 +243,8 @@ void game_start() {
 	}
 }
 
-void init_list(LinkedListNode* head, LinkedListNode* tail) {
-	LinkedListNode* new_node = 
+void init_list(ListNode* head, ListNode* tail) {
+	ListNode* new_node = (ListNode*)malloc(sizeof(ListNode));
+
+
 }
