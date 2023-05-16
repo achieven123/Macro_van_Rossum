@@ -36,7 +36,7 @@ void gotoxy(int x, int y);
 void set_block(int x, int y, int color);
 void delete_block(int x, int y);
 
-void init();
+void init_game();
 void draw_window();
 void draw_map();
 void draw_info();
@@ -87,7 +87,7 @@ int max_score;
 int speed;
 
 int main() {
-	init();
+	init_game();
 	draw_window();
 	draw_map();
 	draw_info();
@@ -125,7 +125,7 @@ void delete_block(int x, int y) {
 	else set_block(x, y, D_GREEN);
 }
 
-void init() {
+void init_game() {
 	//Ä¿¼­ ¼û±â±â
 	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
 	cursorInfo.bVisible = FALSE;
@@ -203,6 +203,9 @@ int input_key() {
 
 void game_start() {
 	LinkedListNode* head;
+	LinkedListNode* tail;
+
+
 
 	int dir = RIGHT;
 	int a = 0;
@@ -240,4 +243,6 @@ void game_start() {
 	}
 }
 
-LinkedListNode* 
+void init_list(LinkedListNode* head, LinkedListNode* tail) {
+	LinkedListNode* new_node = 
+}
