@@ -92,10 +92,10 @@ int main() {
 	draw_map();
 	draw_info();
 
-	/*gotoxy(0, 0);
-	printf("¾È´¨");
+	//gotoxy(0, 0);
+	//printf("¾È´¨");
 
-	set_block(0, 0, WHITE);*/
+	//set_block(0, 0, WHITE);
 
 	game_start();
 
@@ -202,8 +202,11 @@ int input_key() {
 }
 
 void game_start() {
+
+
 	int dir = RIGHT;
 	int a = 0;
+	
 	while (true) {
 		if (_kbhit()) {
 			int input = input_key();
@@ -236,3 +239,5 @@ void game_start() {
 
 	}
 }
+
+LinkedListNode* 
