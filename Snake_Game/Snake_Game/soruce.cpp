@@ -246,5 +246,8 @@ void game_start() {
 void init_list(ListNode* head, ListNode* tail) {
 	ListNode* new_node = (ListNode*)malloc(sizeof(ListNode));
 
+	new_node
 
+	head = new_node;
+	tail = new_node;
 }
