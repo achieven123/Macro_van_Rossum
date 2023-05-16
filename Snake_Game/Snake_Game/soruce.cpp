@@ -246,8 +246,21 @@ void game_start() {
 void init_list(ListNode* head, ListNode* tail) {
 	ListNode* new_node = (ListNode*)malloc(sizeof(ListNode));
 
-	new_node
+	new_node->x = map_width / 2;
+	new_node->y = map_height / 2;
+	new_node->left = NULL;
+	new_node->right = NULL;
 
 	head = new_node;
 	tail = new_node;
+}
+
+void move_forward(ListNode* head) {
+	ListNode* new_node = (ListNode*)malloc(sizeof(ListNode));
+
+	new_node->x = map_width / 2;
+	new_node->y = map_height / 2;
+	new_node->left = NULL;
+	new_node->right = NULL;
+
 }
