@@ -209,10 +209,11 @@ void game_start() {
 
 	int dir = RIGHT;
 	int a = 0;
-	
+	int input;
+
 	while (true) {
 		if (_kbhit()) {
-			int input = input_key();
+			input = input_key();
 
 			switch (input) {
 			case UP:
@@ -255,12 +256,17 @@ void init_list(ListNode* head, ListNode* tail) {
 	tail = new_node;
 }
 
-void move_forward(ListNode* head) {
+void move_forward(ListNode* head, int dir) {
 	ListNode* new_node = (ListNode*)malloc(sizeof(ListNode));
 
-	new_node->x = map_width / 2;
-	new_node->y = map_height / 2;
+	new_node->x = head->x;
+	new_node->y = head->y;
+
+	switch (dir) {
+	case UP:
+
+	}
+
 	new_node->left = NULL;
 	new_node->right = NULL;
-
 }
