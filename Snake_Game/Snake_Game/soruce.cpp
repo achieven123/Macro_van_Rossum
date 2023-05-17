@@ -59,7 +59,7 @@ typedef struct ListNode {
 	ListNode* right;
 } ListNode;
 
-#pragma endregion
+#pragma endregion  
 
 #pragma region Function Prototype
 
@@ -208,9 +208,12 @@ void game_start() {
 	int input;
 
 	init_list();
-	//insert_end(dir);
-	//insert_end(dir);
-	//insert_end(dir);
+	insert_end(dir);
+	insert_end(dir);
+	insert_end(dir);
+	insert_end(dir);
+	insert_end(dir);
+	insert_end(dir);
 	
 	set_color(BLACK, GREEN);
 	gotoxy(-2, map_height + 2);
@@ -241,7 +244,9 @@ void game_start() {
 				set_color(BLACK, RED);
 				gotoxy(-2, map_height + 2);
 				printf("일시정지 : ");
-				system("Pause");
+				/*system("Pause");*/
+				_getch();
+				
 				set_color(BLACK, WHITE);
 				gotoxy(-2, map_height + 2);
 				for (int y = 0; y < 50; y++) printf(" ");
@@ -250,7 +255,7 @@ void game_start() {
 		}
 
 		insert_first(dir);
-		if (dir != UP) delete_end();
+		delete_end();
 		Sleep(speed);
 	}
 }
