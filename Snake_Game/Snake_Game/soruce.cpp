@@ -243,10 +243,8 @@ void game_start() {
 			case ESC:
 				set_color(BLACK, RED);
 				gotoxy(-2, map_height + 2);
-				printf("일시정지 : ");
-				/*system("Pause");*/
+				printf("일시정지 : 계속하려면 아무 키나 누르십시오 . . .");
 				_getch();
-				
 				set_color(BLACK, WHITE);
 				gotoxy(-2, map_height + 2);
 				for (int y = 0; y < 50; y++) printf(" ");
