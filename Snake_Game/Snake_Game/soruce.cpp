@@ -262,11 +262,12 @@ void move_forward(ListNode* head, int dir) {
 	new_node->x = head->x;
 	new_node->y = head->y;
 
-	switch (dir) {
-	case UP:
-
-	}
+	if (dir == UP) new_node->y--;
+	if (dir == DOWN) new_node->y++;
+	if (dir == LEFT) new_node->x--;
+	if (dir == RIGHT) new_node->x++;
 
 	new_node->left = NULL;
-	new_node->right = NULL;
+	new_node->right = head;
+
 }
