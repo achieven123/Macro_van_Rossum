@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <Windows.h>
+#include <windows.h>
 #include <conio.h>
+#include<time.h>
 
 #pragma region Key Input
 
@@ -80,10 +81,13 @@ void insert_first(int dir);
 void insert_end(int dir);
 void delete_end();
 
+void create_fruit();
+
 #pragma endregion 
 
 int map[MAX_HEIGHT][MAX_WIDTH];
 int snake[MAX_HEIGHT][MAX_WIDTH];
+int fruit[MAX_HEIGHT][MAX_WIDTH];
 int map_width = 25;
 int map_height = 25;
 int speed = 100;
@@ -203,18 +207,20 @@ int input_key() {
 }
 
 void game_start() {
+	srand(time(NULL));
+
 	int dir = RIGHT;
 	int a = 0;
 	int input;
 
 	init_list();
-	insert_end(dir);
-	insert_end(dir);
-	insert_end(dir);
-	insert_end(dir);
-	insert_end(dir);
-	insert_end(dir);
-	
+	//insert_end(dir);
+	//insert_end(dir);
+	//insert_end(dir);
+	//insert_end(dir);
+	//insert_end(dir);
+	//insert_end(dir);
+	create_fruit();
 	set_color(BLACK, GREEN);
 	gotoxy(-2, map_height + 2);
 	printf("시작하려면 아무 키나 누르십시오 . . .");
@@ -252,6 +258,12 @@ void game_start() {
 			}
 		}
 
+		if (fruit[head->y][head->x] == 1) {
+			fruit[head->y][head->x] = 0;
+			insert_end(dir);
+			create_fruit();
+		}
+
 		insert_first(dir);
 		delete_end();
 		Sleep(speed);
@@ -270,6 +282,7 @@ void init_list() {
 	tail = new_node;
 
 	set_block(head->x, head->y, BLUE);
+	snake[head->y][head->x] = 1;
 }
 
 void insert_first(int dir) {
@@ -290,6 +303,7 @@ void insert_first(int dir) {
 
 	set_block(head->x, head->y, BLUE);
 	set_block(head->right->x, head->right->y, SKYBLUE);
+	snake[head->y][head->x] = 1;
 }
 
 void insert_end(int dir) {
@@ -309,6 +323,7 @@ void insert_end(int dir) {
 	tail = new_node;
 
 	set_block(tail->x, tail->y, SKYBLUE);
+	snake[tail->y][tail->x] = 1;
 }
 
 void delete_end() {
@@ -319,5 +334,16 @@ void delete_end() {
 	removed = tail;
 	removed->left->right = NULL;
 	tail = removed->left;
+
+	snake[removed->y][removed->x] = 0;
+
 	free(removed);
+}
+
+void create_fruit() {
+	int x = rand() % map_width;
+	int y = rand() % map_height;
+
+	fruit[y][x] = 1;
+	set_block(x, y, RED);
 }
