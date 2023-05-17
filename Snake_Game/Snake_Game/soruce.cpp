@@ -29,23 +29,6 @@
 
 #pragma endregion
 
-#pragma region Function Prototype
-
-void set_color(int back_color, int font_color);
-void gotoxy(int x, int y);
-void set_block(int x, int y, int color);
-void delete_block(int x, int y);
-
-void init_game();
-void draw_window();
-void draw_map();
-void draw_info();
-
-int input_key();
-void game_start();
-
-#pragma endregion 
-
 #pragma region Enum & Struct
 
 enum {
@@ -78,6 +61,25 @@ typedef struct ListNode {
 
 #pragma endregion
 
+#pragma region Function Prototype
+
+void set_color(int back_color, int font_color);
+void gotoxy(int x, int y);
+void set_block(int x, int y, int color);
+void delete_block(int x, int y);
+
+void init_game();
+void draw_window();
+void draw_map();
+void draw_info();
+
+int input_key();
+void game_start();
+void init_list(ListNode* head, ListNode* tail);
+void move_forward(ListNode* head, int dir);
+
+#pragma endregion 
+
 int map[MAX_HEIGHT][MAX_WIDTH];
 int snake[MAX_HEIGHT][MAX_WIDTH];
 int map_width = 25;
@@ -87,15 +89,15 @@ int max_score;
 int speed;
 
 int main() {
-	init_game();
-	draw_window();
-	draw_map();
-	draw_info();
+	//init_game();
+	//draw_window();
+	//draw_map();
+	//draw_info();
 
 	//gotoxy(0, 0);
 	//printf("¾È´¨");
 
-	//set_block(0, 0, WHITE);
+	set_block(0, 0, WHITE);
 
 	game_start();
 
@@ -202,10 +204,10 @@ int input_key() {
 }
 
 void game_start() {
-	ListNode* head;
-	ListNode* tail;
+	ListNode* head = NULL;
+	ListNode* tail = NULL;
 
-
+	init_list(head, tail);
 
 	int dir = RIGHT;
 	int a = 0;
@@ -240,20 +242,26 @@ void game_start() {
 			}
 		}
 
-
+		init_list(head, tail);
+		move_forward(head, dir);
 	}
 }
 
 void init_list(ListNode* head, ListNode* tail) {
+	head = (ListNode*)malloc(sizeof(ListNode));
+	tail = (ListNode*)malloc(sizeof(ListNode));
 	ListNode* new_node = (ListNode*)malloc(sizeof(ListNode));
 
+	//printf("¾È³ç");
 	new_node->x = map_width / 2;
 	new_node->y = map_height / 2;
 	new_node->left = NULL;
 	new_node->right = NULL;
 
-	head = new_node;
-	tail = new_node;
+	head->right = new_node;
+	tail->left = new_node;
+
+	set_block(new_node->x, new_node->y, RED);
 }
 
 void move_forward(ListNode* head, int dir) {
@@ -269,5 +277,8 @@ void move_forward(ListNode* head, int dir) {
 
 	new_node->left = NULL;
 	new_node->right = head;
+	head->left = new_node;
+	head->right = new_node;
 
+	set_block(new_node->x, new_node->y, RED);
 }
