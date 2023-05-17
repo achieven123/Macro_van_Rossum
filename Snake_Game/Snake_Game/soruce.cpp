@@ -86,7 +86,7 @@ int map[MAX_HEIGHT][MAX_WIDTH];
 int snake[MAX_HEIGHT][MAX_WIDTH];
 int map_width = 25;
 int map_height = 25;
-int speed = 100;
+int speed = 50;
 int current_score;
 int max_score;
 
