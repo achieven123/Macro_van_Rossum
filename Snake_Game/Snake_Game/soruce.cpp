@@ -66,31 +66,39 @@ typedef struct ListNode {
 
 void set_color(int back_color, int font_color);
 void gotoxy(int x, int y);
+int input_key();
 void set_block(int x, int y, int color);
 void delete_block(int x, int y);
 
+void setup();
+
 void init_game();
+
 void draw_window();
 void draw_map();
 void draw_info();
 
-int input_key();
+
 void game_start();
+int game_over();
+
 void init_list();
 void insert_first(int dir);
 void insert_end(int dir);
 void delete_end();
 
 void create_fruit();
-
+int out_map(int x, int y);
 #pragma endregion 
 
 int map[MAX_HEIGHT][MAX_WIDTH];
 int snake[MAX_HEIGHT][MAX_WIDTH];
 int fruit[MAX_HEIGHT][MAX_WIDTH];
+
 int map_width = 25;
 int map_height = 25;
-int speed = 50;
+
+int speed = 100;
 int current_score;
 int max_score;
 
@@ -98,15 +106,9 @@ ListNode* head;
 ListNode* tail;
 
 int main() {
-	init_game();
-	draw_window();
-	draw_map();
-	draw_info();
-	gotoxy(0, 0);
-	printf("안녕하세요");
-	game_start();
+	setup();
 
-	_getch();
+	game_start();
 
 	return 0;
 }
@@ -118,6 +120,16 @@ void set_color(int back_color, int font_color) {
 void gotoxy(int x, int y) {
 	COORD pos = { x + GAP_X + 2, y + GAP_Y + 4 };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+}
+
+int input_key() {
+	int input = _getch();
+
+	if (input == 224) { input = _getch(); return input; }
+	else if (input == W) return UP;
+	else if (input == S) return DOWN;
+	else if (input == A) return LEFT;
+	else if (input == D) return RIGHT;
 }
 
 void set_block(int x, int y, int color) {
@@ -132,7 +144,8 @@ void delete_block(int x, int y) {
 	else set_block(x, y, D_GREEN);
 }
 
-void init_game() {
+
+void setup() {
 	//커서 숨기기
 	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
 	cursorInfo.bVisible = FALSE;
@@ -145,13 +158,6 @@ void init_game() {
 	printf("Set the console window to full screen and press any key...");
 	getch();
 	system("cls");
-
-	//맵 배열 생성
-	for (int y = 0; y < MAX_HEIGHT; y++) {
-		for (int x = 0; x < MAX_WIDTH; x++) {
-			if ((x + y) % 2 != 0)  map[y][x] = 1;
-		}
-	}
 }
 
 void draw_window() {
@@ -182,7 +188,7 @@ void draw_info() {
 	int y = -3;
 
 	set_color(D_GRAY, WHITE);
-	gotoxy(x, y); printf("score %d", current_score);
+	gotoxy(x, y); printf("score %d", current_score * 100);
 	gotoxy(x + map_width * 2 - 15, y); printf("20223070 김경훈");
 
 	x = map_width * 2 + 6;
@@ -197,25 +203,33 @@ void draw_info() {
 	gotoxy(x, y + 6); printf("Game Stop	 : ESC");
 }
 
-int input_key() {
-	int input = _getch();
 
-	if (input == 224) { input = _getch(); return input; }
-	else if (input == W) return UP;
-	else if (input == S) return DOWN;
-	else if (input == A) return LEFT;
-	else if (input == D) return RIGHT;
+void init_game() {
+	for (int y = 0; y < MAX_HEIGHT; y++) {
+		for (int x = 0; x < MAX_WIDTH; x++) {
+			if ((x + y) % 2 != 0) map[y][x] = 1;
+			snake[y][x] = fruit[y][x] = 0;
+		}
+	}
+
+	for (ListNode* p = head; p != NULL; p = p->right) {
+		delete_end();
+	}
+
+	draw_window();
+	draw_map();
+	draw_info();
+	init_list();
+	create_fruit();
 }
 
 void game_start() {
 	srand(time(NULL));
+	init_game();
 
 	int dir = RIGHT;
-	int a = 0;
 	int input;
 
-	init_list();
-	create_fruit();
 	set_color(BLACK, GREEN);
 	gotoxy(-2, map_height + 2);
 	printf("시작하려면 아무 키나 누르십시오 . . .");
@@ -245,12 +259,6 @@ void game_start() {
 				set_color(BLACK, RED);
 				gotoxy(-2, map_height + 2);
 				printf("일시정지 : 계속하려면 아무 키나 누르십시오 . . .");
-				for (int y = 0; y < map_height; y++) {
-					for (int x = 0; x < map_width; x++) {
-						printf("%d", snake[y][x]);
-					}
-					printf("\n");
-				}
 				_getch();
 				set_color(BLACK, WHITE);
 				gotoxy(-2, map_height + 2);
@@ -276,16 +284,43 @@ void game_start() {
 			_getch();
 		}
 		if (head->x < 0 || head->x >= map_width || head->y < 0 || head->y >= map_height) {
-			set_color(BLACK, RED);
-			gotoxy(-2, map_height + 2);
-			printf("Game Over");
-			break;
+			set_block(head->x, head->y, GRAY);
+			if (game_over()) break;
 		}
 
 		insert_first(dir);
 		delete_end();
 		Sleep(speed);
 
+	}
+}
+
+int game_over() {
+	while (true) {
+		char result;
+		set_color(BLACK, RED);
+		gotoxy(-2, map_height + 2);
+		printf("Game Over! ");
+		set_color(BLACK, WHITE);
+		printf("다시 플레이 하시겠습니까?[Y/N] ");
+
+		scanf(" %c", &result);
+
+		gotoxy(-2, map_height + 2);
+		for (int y = 0; y < 50; y++) printf(" ");
+
+		if (result == 'Y' || result == 'N') {
+
+			if (result == 'Y') return 1;
+			if (result == 'N') return 0;
+		}
+		else {
+			gotoxy(-2, map_height + 2);
+			set_color(BLACK, RED);
+			printf("잘못 입력했습니다.");
+			set_color(BLACK, WHITE);
+			Sleep(500);
+		}
 	}
 }
 
@@ -321,6 +356,7 @@ void insert_first(int dir) {
 
 	set_block(head->x, head->y, BLUE);
 	set_block(head->right->x, head->right->y, SKYBLUE);
+	if (snake[head->y][head->x] == 0) snake[head->y][head->x] = 2;
 	snake[head->right->y][head->right->x] = 1;
 }
 
@@ -354,6 +390,7 @@ void delete_end() {
 	tail = removed->left;
 
 	snake[removed->y][removed->x] = 0;
+	if (out_map(removed->x, removed->y)) 	set_block(removed->x, removed->y, GRAY);
 
 	free(removed);
 }
@@ -364,4 +401,9 @@ void create_fruit() {
 
 	fruit[y][x] = 1;
 	set_block(x, y, RED);
+}
+
+int out_map(int x, int y) {
+	if (x < 0 || x >= map_width || y < 0 || y >= map_height) return 1;
+	else return 0;
 }
