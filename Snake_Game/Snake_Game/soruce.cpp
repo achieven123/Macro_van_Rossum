@@ -75,8 +75,10 @@ void draw_info();
 
 int input_key();
 void game_start();
-void init_list(ListNode* head, ListNode* tail);
-void move_forward(ListNode* head, int dir);
+void init_list();
+void insert_first(int dir);
+void insert_end(int dir);
+void delete_end();
 
 #pragma endregion 
 
@@ -84,20 +86,18 @@ int map[MAX_HEIGHT][MAX_WIDTH];
 int snake[MAX_HEIGHT][MAX_WIDTH];
 int map_width = 25;
 int map_height = 25;
+int speed = 100;
 int current_score;
 int max_score;
-int speed;
+
+ListNode* head;
+ListNode* tail;
 
 int main() {
-	//init_game();
-	//draw_window();
-	//draw_map();
-	//draw_info();
-
-	//gotoxy(0, 0);
-	//printf("안뇽");
-
-	set_block(0, 0, WHITE);
+	init_game();
+	draw_window();
+	draw_map();
+	draw_info();
 
 	game_start();
 
@@ -189,7 +189,6 @@ void draw_info() {
 	gotoxy(x, y + 3); printf("Move Down  : S or ↓");
 	gotoxy(x, y + 4); printf("Move Left  : A or ←");
 	gotoxy(x, y + 5); printf("Move Right : D or →");
-
 	gotoxy(x, y + 6); printf("Game Stop	 : ESC");
 }
 
@@ -204,14 +203,22 @@ int input_key() {
 }
 
 void game_start() {
-	ListNode* head = NULL;
-	ListNode* tail = NULL;
-
-	init_list(head, tail);
-
 	int dir = RIGHT;
 	int a = 0;
 	int input;
+
+	init_list();
+	//insert_end(dir);
+	//insert_end(dir);
+	//insert_end(dir);
+	
+	set_color(BLACK, GREEN);
+	gotoxy(-2, map_height + 2);
+	printf("시작하려면 아무 키나 누르십시오 . . .");
+	_getch();
+	set_color(BLACK, WHITE);
+	gotoxy(-2, map_height + 2);
+	for (int y = 0; y < 50; y++) printf(" ");
 
 	while (true) {
 		if (_kbhit()) {
@@ -242,29 +249,27 @@ void game_start() {
 			}
 		}
 
-		init_list(head, tail);
-		move_forward(head, dir);
+		insert_first(dir);
+		if (dir != UP) delete_end();
+		Sleep(speed);
 	}
 }
 
-void init_list(ListNode* head, ListNode* tail) {
-	head = (ListNode*)malloc(sizeof(ListNode));
-	tail = (ListNode*)malloc(sizeof(ListNode));
+void init_list() {
 	ListNode* new_node = (ListNode*)malloc(sizeof(ListNode));
 
-	//printf("안녕");
 	new_node->x = map_width / 2;
 	new_node->y = map_height / 2;
 	new_node->left = NULL;
 	new_node->right = NULL;
 
-	head->right = new_node;
-	tail->left = new_node;
+	head = new_node;
+	tail = new_node;
 
-	set_block(new_node->x, new_node->y, RED);
+	set_block(head->x, head->y, BLUE);
 }
 
-void move_forward(ListNode* head, int dir) {
+void insert_first(int dir) {
 	ListNode* new_node = (ListNode*)malloc(sizeof(ListNode));
 
 	new_node->x = head->x;
@@ -278,7 +283,38 @@ void move_forward(ListNode* head, int dir) {
 	new_node->left = NULL;
 	new_node->right = head;
 	head->left = new_node;
-	head->right = new_node;
+	head = new_node;
 
-	set_block(new_node->x, new_node->y, RED);
+	set_block(head->x, head->y, BLUE);
+	set_block(head->right->x, head->right->y, SKYBLUE);
+}
+
+void insert_end(int dir) {
+	ListNode* new_node = (ListNode*)malloc(sizeof(ListNode));
+
+	new_node->x = tail->x;
+	new_node->y = tail->y;
+
+	if (dir == UP) new_node->y++;
+	if (dir == DOWN) new_node->y--;
+	if (dir == LEFT) new_node->x++;
+	if (dir == RIGHT) new_node->x--;
+
+	new_node->left = tail;
+	new_node->right = NULL;
+	tail->right = new_node;
+	tail = new_node;
+
+	set_block(tail->x, tail->y, SKYBLUE);
+}
+
+void delete_end() {
+	ListNode* removed;
+
+	delete_block(tail->x, tail->y);
+
+	removed = tail;
+	removed->left->right = NULL;
+	tail = removed->left;
+	free(removed);
 }
