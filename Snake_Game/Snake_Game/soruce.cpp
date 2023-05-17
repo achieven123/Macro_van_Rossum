@@ -90,7 +90,7 @@ int snake[MAX_HEIGHT][MAX_WIDTH];
 int fruit[MAX_HEIGHT][MAX_WIDTH];
 int map_width = 25;
 int map_height = 25;
-int speed = 100;
+int speed = 50;
 int current_score;
 int max_score;
 
@@ -102,7 +102,8 @@ int main() {
 	draw_window();
 	draw_map();
 	draw_info();
-
+	gotoxy(0, 0);
+	printf("안녕하세요");
 	game_start();
 
 	_getch();
@@ -214,12 +215,6 @@ void game_start() {
 	int input;
 
 	init_list();
-	//insert_end(dir);
-	//insert_end(dir);
-	//insert_end(dir);
-	//insert_end(dir);
-	//insert_end(dir);
-	//insert_end(dir);
 	create_fruit();
 	set_color(BLACK, GREEN);
 	gotoxy(-2, map_height + 2);
@@ -250,23 +245,47 @@ void game_start() {
 				set_color(BLACK, RED);
 				gotoxy(-2, map_height + 2);
 				printf("일시정지 : 계속하려면 아무 키나 누르십시오 . . .");
+				for (int y = 0; y < map_height; y++) {
+					for (int x = 0; x < map_width; x++) {
+						printf("%d", snake[y][x]);
+					}
+					printf("\n");
+				}
 				_getch();
 				set_color(BLACK, WHITE);
 				gotoxy(-2, map_height + 2);
 				for (int y = 0; y < 50; y++) printf(" ");
+
 				break;
 			}
 		}
-
+		
 		if (fruit[head->y][head->x] == 1) {
 			fruit[head->y][head->x] = 0;
 			insert_end(dir);
 			create_fruit();
+
+			current_score++;
+			draw_info();
+		}
+
+		if (snake[head->y][head->x] == 1) {
+			set_color(BLACK, RED);
+			gotoxy(-2, map_height + 2);
+			printf("Game Over");
+			_getch();
+		}
+		if (head->x < 0 || head->x >= map_width || head->y < 0 || head->y >= map_height) {
+			set_color(BLACK, RED);
+			gotoxy(-2, map_height + 2);
+			printf("Game Over");
+			break;
 		}
 
 		insert_first(dir);
 		delete_end();
 		Sleep(speed);
+
 	}
 }
 
@@ -282,7 +301,6 @@ void init_list() {
 	tail = new_node;
 
 	set_block(head->x, head->y, BLUE);
-	snake[head->y][head->x] = 1;
 }
 
 void insert_first(int dir) {
@@ -303,7 +321,7 @@ void insert_first(int dir) {
 
 	set_block(head->x, head->y, BLUE);
 	set_block(head->right->x, head->right->y, SKYBLUE);
-	snake[head->y][head->x] = 1;
+	snake[head->right->y][head->right->x] = 1;
 }
 
 void insert_end(int dir) {
