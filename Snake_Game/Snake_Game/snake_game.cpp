@@ -18,7 +18,7 @@
 #define MAP_WIDTH 25
 #define MAP_HEIGHT 25
 #define MAX_LENGTH 20
-#define MAX_SPEED 100
+#define MAX_SPEED 50
 
 #pragma endregion
 
@@ -361,7 +361,7 @@ void game_start() {
 			if (length < MAX_LENGTH) length++;
 			else delete_end();
 
-			if (score % 900 == 0 && score != 0 && speed < MAX_SPEED) speed += 10;
+			if (score % 500 == 0 && score != 0 && speed < MAX_SPEED) speed += 5;
 			if (score > high_score) high_score = score;
 
 			create_fruit();
@@ -378,7 +378,7 @@ void game_start() {
 			else break;
 		}
 
-		Sleep(MAX_SPEED - speed);
+		Sleep(100 - speed);
 	}
 }
 int game_over() {
