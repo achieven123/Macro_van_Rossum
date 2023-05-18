@@ -11,6 +11,7 @@
 #define LEFT 75
 #define RIGHT 77
 #define ESC 27
+#define SP 32
 
 #define GAP_X 4
 #define GAP_Y 2
@@ -58,6 +59,7 @@ typedef struct ListNode {
 void set_color(int back_color, int font_color);
 void gotoxy(int x, int y);
 int input_key();
+void wait_input(int is_same);
 void set_block(int x, int y, int color);
 void delete_block(int x, int y);
 
@@ -69,7 +71,6 @@ void draw_frame();
 void draw_map();
 void draw_info();
 
-
 void game_start();
 int game_over();
 
@@ -80,7 +81,8 @@ void delete_end();
 
 void create_fruit();
 int out_map(int x, int y);
-
+void message_start(int x, int y, const char* message);
+void message_end(int x, int y, const char* message);
 #pragma endregion 
 
 #pragma region Global Variable
@@ -92,6 +94,7 @@ int fruit[MAP_HEIGHT][MAP_WIDTH];
 int direction;
 int speed;
 int length;
+
 int score;
 int high_score;
 
@@ -112,6 +115,15 @@ int input_key() {
 	if (input == 224) { input = _getch(); return input; }
 	else return input;
 }
+void wait_input(int is_same) {
+	while (true) {
+		if (_kbhit()) {
+			int input = input_key();
+			if (input == is_same) break;
+		}
+	}
+}
+
 void setup() {
 	//커서 숨기기
 	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
@@ -130,6 +142,18 @@ void gotoxy(int x, int y) {
 	COORD pos = { x + GAP_X + 2, y + GAP_Y + 4 };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 }
+void message_start(int font_color, const char* message) {
+	set_color(BLACK, font_color);
+	gotoxy(-2, MAP_HEIGHT + 2);
+	printf("%s", message);
+	set_color(BLACK, WHITE);
+}
+
+void message_end() {
+	gotoxy(-2, MAP_HEIGHT + 2);
+	for (int y = 0; y < 50; y++) printf(" ");
+}
+
 void set_color(int back_color, int font_color) {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), back_color * 16 + font_color);
 }
@@ -144,6 +168,14 @@ void delete_block(int x, int y) {
 	if (map[x][y] == 0) set_block(x, y, GREEN);
 	else set_block(x, y, D_GREEN);
 } 
+
+void draw_map() {
+	for (int y = 0; y < MAP_HEIGHT; y++) {
+		for (int x = 0; x < MAP_WIDTH; x++) {
+			delete_block(x, y);
+		}
+	}
+}
 void draw_frame() {
 	for (int x = -1, y = -4; x < MAP_WIDTH + 1; x++) {
 		set_block(x, y, D_GRAY);
@@ -158,14 +190,6 @@ void draw_frame() {
 		set_block(x + MAP_WIDTH + 1, y, GRAY);
 	}
 }
-
-void draw_map() {
-	for (int y = 0; y < MAP_HEIGHT; y++) {
-		for (int x = 0; x < MAP_WIDTH; x++) {
-			delete_block(x, y);
-		}
-	}
-}
 void draw_info() {
 	int x = 0;
 	int y = -3;
@@ -175,162 +199,24 @@ void draw_info() {
 	gotoxy(x + MAP_WIDTH * 2 - 15, y); printf("20223070 김경훈");
 
 	x = MAP_WIDTH * 2 + 6;
-	y = MAP_HEIGHT - 7;
+	y = MAP_HEIGHT - 5;
 
 	set_color(BLACK, WHITE);
-	gotoxy(x, y);     printf("High Socre    : %d", high_score);
-	gotoxy(x, y + 1); printf("Current Speed : %d", speed);
-
-	gotoxy(x, y + 3); printf("Snake Move    :  ←, →, ↑, ↓");
-	gotoxy(x, y + 6); printf("Game Stop     :  ESC");
+	gotoxy(x, y + 0); printf("High Socre : %d", high_score);
+	gotoxy(x, y + 1); printf("Speed      : %d", speed);
+	gotoxy(x, y + 3); printf("Snake Move :  ←, →, ↑, ↓");
+	gotoxy(x, y + 4); printf("Game Stop  :  ESC");
 }
-void draw_window() {
-	
-}
-
-
-
-
-
-
-void init_game() {
-	head = tail = NULL;
-	srand(time(NULL));
-	direction = RIGHT;
-	score = 0;
-
-	length = 0;
-	speed = 10;
-
-	
-	for (int y = 0; y < MAP_HEIGHT; y++) {
-		for (int x = 0; x < MAP_WIDTH; x++) {
-			if ((x + y) % 2 != 0) map[y][x] = 1;
-			snake[y][x] = fruit[y][x] = 0;
-		}
-	}
-
-	draw_frame();
-	draw_map();
-	draw_info();
-
-	create_fruit();
-
-	init_list();
-	insert_end(direction);
-	insert_end(direction);
-	insert_end(direction);
-
-	set_color(BLACK, GREEN);
-	gotoxy(-2, MAP_HEIGHT + 2);
-	printf("press 's' to srart");
-	_getch();
-	set_color(BLACK, WHITE);
-	gotoxy(-2, MAP_HEIGHT + 2);
-	for (int y = 0; y < 50; y++) printf(" ");
-}
-
-void game_start() {
-	init_game();
-
+void create_fruit() {
 	while (true) {
-		if (_kbhit()) {
-			int input = input_key();
+		int x = rand() % MAP_WIDTH;
+		int y = rand() % MAP_HEIGHT;
 
-			switch (input) {
-			case UP:
-			case DOWN:
-			case LEFT:
-			case RIGHT:
-				if ((input != UP && direction == DOWN) ||
-					(input != DOWN && direction == UP) ||
-					(input != LEFT && direction == RIGHT) ||
-					(input != RIGHT && direction == LEFT)) {
-					direction = input;
-				}
-				break;
-
-			case ESC:
-				set_color(BLACK, RED);
-				gotoxy(-2, MAP_HEIGHT + 2);
-				printf("일시정지 : 계속하려면 아무 키나 누르십시오 . . .");
-				_getch();
-				set_color(BLACK, WHITE);
-				gotoxy(-2, MAP_HEIGHT + 2);
-				for (int y = 0; y < 50; y++) printf(" ");
-
-				break;
-			}
-		}
-
-		insert_first(direction);
-
-		if (fruit[head->y][head->x] == 1) {
-			fruit[head->y][head->x] = 0;
-
-			score += 100;
-			if (length < MAX_LENGTH) {
-				length++;
-			}
-			else
-			{
-				delete_end();
-			}
-
-			if (score > high_score) high_score = score;
-			create_fruit();
-			draw_info();
-
-			if (score % 900 == 0 && score != 0 && speed < MAX_SPEED) speed += 10;
-		}
+		if (snake[y][x] == 1 || snake[y][x] == 2) continue;
 		else {
-			delete_end();
-		}
-
-		if (out_map(head->x, head->y)) {
-			draw_frame();
-			draw_info();
-
-			if (!game_over()) break;
-			else init_game();
-		}
-
-		if (snake[head->y][head->x] == 1) {
-			if (!game_over()) break;
-			else init_game();
-		}
-
-	
-
-		Sleep(MAX_SPEED - speed);
-	}
-}
-
-int game_over() {
-
-	while (true) {
-		char result;
-		set_color(BLACK, RED);
-		gotoxy(-2, MAP_HEIGHT + 2);
-		printf("Game Over! ");
-		set_color(BLACK, WHITE);
-		printf("다시 플레이 하시겠습니까?[Y/N] ");
-		scanf(" %c", &result);
-
-		gotoxy(-2, MAP_HEIGHT + 2);
-		for (int y = 0; y < 50; y++) printf(" ");
-
-		if (result == 'Y' || result == 'N') {
-
-			if (result == 'Y') return 1;
-			if (result == 'N') return 0;
-		}
-		else {
-			gotoxy(-2, MAP_HEIGHT + 2);
-			set_color(BLACK, RED);
-			printf("잘못 입력했습니다.");
-			set_color(BLACK, WHITE);
-			Sleep(500);
+			fruit[y][x] = 1;
+			set_block(x, y, RED);
+			break;
 		}
 	}
 }
@@ -406,21 +292,128 @@ void delete_end() {
 	free(removed);
 }
 
-void create_fruit() {
-	while (true) {
-		int x = rand() % MAP_WIDTH;
-		int y = rand() % MAP_HEIGHT;
-
-		if (snake[y][x] == 1 || snake[y][x] == 2) continue;
-		else {
-			fruit[y][x] = 1;
-			set_block(x, y, RED);
-			break;
-		}
-	}
-}
-
 int out_map(int x, int y) {
 	if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT) return 1;
 	else return 0;
+}
+
+void init_game() {
+	srand(time(NULL));
+	
+	head = NULL;
+	tail = NULL;
+
+	direction = RIGHT;
+	speed = 10;
+	length = 0;
+	score = 0;
+	
+	for (int y = 0; y < MAP_HEIGHT; y++) {
+		for (int x = 0; x < MAP_WIDTH; x++) {
+			if ((x + y) % 2 != 0) map[y][x] = 1;
+			snake[y][x] = 0;
+			fruit[y][x] = 0;
+		}
+	}
+
+	draw_map();
+	draw_frame();
+	draw_info();
+	create_fruit();
+
+	init_list();
+	insert_end(direction);
+	insert_end(direction);
+	insert_end(direction);
+
+	message_start(GREEN, "press 's' to srart");
+	wait_input('s');
+	message_end();
+}
+
+void game_start() {
+	init_game();
+
+	while (true) {
+		if (_kbhit()) {
+			int input = input_key();
+
+			switch (input) {
+			case UP:
+			case DOWN:
+			case LEFT:
+			case RIGHT:
+				if ((input != UP && direction == DOWN) ||
+					(input != DOWN && direction == UP) ||
+					(input != LEFT && direction == RIGHT) ||
+					(input != RIGHT && direction == LEFT)) {
+					direction = input;
+				}
+				break;
+
+			case ESC:
+				message_start(GREEN, "press 'ESC' to continue . . .");
+				wait_input(ESC);
+				message_end();
+				break;
+			}
+		}
+
+		insert_first(direction);
+
+		if (fruit[head->y][head->x] == 1) {
+			fruit[head->y][head->x] = 0;
+
+			score += 100;
+			if (length < MAX_LENGTH) {
+				length++;
+			}
+			else
+			{
+				delete_end();
+			}
+
+			if (score > high_score) high_score = score;
+			create_fruit();
+			draw_info();
+
+			if (score % 900 == 0 && score != 0 && speed < MAX_SPEED) speed += 10;
+		}
+		else {
+			delete_end();
+		}
+
+		if (out_map(head->x, head->y)) {
+			draw_frame();
+			draw_info();
+
+			if (!game_over()) break;
+			else init_game();
+		}
+
+		if (snake[head->y][head->x] == 1) {
+			if (!game_over()) break;
+			else init_game();
+		}
+
+	
+
+		Sleep(MAX_SPEED - speed);
+	}
+}
+
+int game_over() {
+
+	for (int i = 0; i < 10; i++) {
+		message_start(RED, "Game Over!");
+		Sleep(300);
+		message_end();
+		Sleep(300);
+	}
+
+	while (true) {
+		message_start(GREEN, "Play Again? [Y/N]");
+		int input = input_key();
+
+	}
 }
