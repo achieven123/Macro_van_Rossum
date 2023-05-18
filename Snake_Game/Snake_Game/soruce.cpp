@@ -167,7 +167,7 @@ void set_block(int x, int y, int color) {
 void delete_block(int x, int y) {
 	if (map[x][y] == 0) set_block(x, y, GREEN);
 	else set_block(x, y, D_GREEN);
-} 
+}
 
 void draw_map() {
 	for (int y = 0; y < MAP_HEIGHT; y++) {
@@ -299,7 +299,7 @@ int out_map(int x, int y) {
 
 void init_game() {
 	srand(time(NULL));
-	
+
 	head = NULL;
 	tail = NULL;
 
@@ -307,7 +307,7 @@ void init_game() {
 	speed = 10;
 	length = 0;
 	score = 0;
-	
+
 	for (int y = 0; y < MAP_HEIGHT; y++) {
 		for (int x = 0; x < MAP_WIDTH; x++) {
 			if ((x + y) % 2 != 0) map[y][x] = 1;
@@ -365,38 +365,25 @@ void game_start() {
 			fruit[head->y][head->x] = 0;
 
 			score += 100;
-			if (length < MAX_LENGTH) {
-				length++;
-			}
-			else
-			{
-				delete_end();
-			}
-
-			if (score > high_score) high_score = score;
-			create_fruit();
-			draw_info();
+			if (length < MAX_LENGTH) length++;
+			else delete_end();
 
 			if (score % 900 == 0 && score != 0 && speed < MAX_SPEED) speed += 10;
+			if (score > high_score) high_score = score;
+
+			create_fruit();
+			draw_info();
 		}
 		else {
 			delete_end();
 		}
 
-		if (out_map(head->x, head->y)) {
+		if (out_map(head->x, head->y) || snake[head->y][head->x] == 1) {
 			draw_frame();
 			draw_info();
-
-			if (!game_over()) break;
-			else init_game();
+			if (game_over()) init_game();
+			else break;
 		}
-
-		if (snake[head->y][head->x] == 1) {
-			if (!game_over()) break;
-			else init_game();
-		}
-
-	
 
 		Sleep(MAX_SPEED - speed);
 	}
@@ -404,16 +391,20 @@ void game_start() {
 
 int game_over() {
 
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 3; i++) {
 		message_start(RED, "Game Over!");
 		Sleep(300);
 		message_end();
 		Sleep(300);
 	}
 
-	while (true) {
-		message_start(GREEN, "Play Again? [Y/N]");
-		int input = input_key();
+	message_start(GREEN, "Play Again? [y/n]");
 
+	while (true) {
+		if (_kbhit()) {
+			int input = input_key();
+			if (input == 'y') return 1;
+			if (input == 'n') return 0;
+		}
 	}
 }
