@@ -100,7 +100,7 @@ int map_width = 25;
 int map_height = 25;
 
 int direction = RIGHT;
-int speed = 50;
+int speed = 30;
 int length;
 int current_score;
 int max_score;
