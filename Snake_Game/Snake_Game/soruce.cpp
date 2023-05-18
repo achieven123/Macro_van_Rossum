@@ -56,33 +56,33 @@ typedef struct ListNode {
 
 #pragma region Function Declaration
 
-void set_color(int back_color, int font_color);
-void gotoxy(int x, int y);
 int input_key();
-void wait_input(int is_same);
-void set_block(int x, int y, int color);
-void delete_block(int x, int y);
-
+void wait_input(int);
 void setup();
+void gotoxy(int, int);
+
+void message_start(int, const char*);
+void message_end();
+
+void set_color(int, int);
+void set_block(int, int, int);
+void delete_block(int, int);
+
+void draw_map();
+void draw_frame();
+void draw_info();
+void create_fruit();
+
+void init_list();
+void insert_first(int);
+void insert_end(int);
+void delete_end();
+int is_out(int, int);
 
 void init_game();
-
-void draw_frame();
-void draw_map();
-void draw_info();
-
 void game_start();
 int game_over();
 
-void init_list();
-void insert_first(int dir);
-void insert_end(int dir);
-void delete_end();
-
-void create_fruit();
-int out_map(int x, int y);
-void message_start(int x, int y, const char* message);
-void message_end(int x, int y, const char* message);
 #pragma endregion 
 
 #pragma region Global Variable
@@ -123,7 +123,6 @@ void wait_input(int is_same) {
 		}
 	}
 }
-
 void setup() {
 	//Ä¿¼­ ¼û±â±â
 	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
@@ -142,13 +141,13 @@ void gotoxy(int x, int y) {
 	COORD pos = { x + GAP_X + 2, y + GAP_Y + 4 };
 	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
 }
+
 void message_start(int font_color, const char* message) {
 	set_color(BLACK, font_color);
 	gotoxy(-2, MAP_HEIGHT + 2);
 	printf("%s", message);
 	set_color(BLACK, WHITE);
 }
-
 void message_end() {
 	gotoxy(-2, MAP_HEIGHT + 2);
 	for (int y = 0; y < 50; y++) printf(" ");
@@ -157,7 +156,6 @@ void message_end() {
 void set_color(int back_color, int font_color) {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), back_color * 16 + font_color);
 }
-
 void set_block(int x, int y, int color) {
 	set_color(color, WHITE);
 	gotoxy(x * 2, +y);
@@ -234,7 +232,6 @@ void init_list() {
 
 	set_block(head->x, head->y, BLUE);
 }
-
 void insert_first(int dir) {
 	ListNode* new_node = (ListNode*)malloc(sizeof(ListNode));
 
@@ -256,7 +253,6 @@ void insert_first(int dir) {
 	if (snake[head->y][head->x] == 0) snake[head->y][head->x] = 2;
 	snake[head->right->y][head->right->x] = 1;
 }
-
 void insert_end(int dir) {
 	ListNode* new_node = (ListNode*)malloc(sizeof(ListNode));
 
@@ -277,7 +273,6 @@ void insert_end(int dir) {
 	set_block(tail->x, tail->y, SKYBLUE);
 	snake[tail->y][tail->x] = 1;
 }
-
 void delete_end() {
 	ListNode* removed;
 
@@ -291,8 +286,7 @@ void delete_end() {
 
 	free(removed);
 }
-
-int out_map(int x, int y) {
+int is_out(int x, int y) {
 	if (x < 0 || x >= MAP_WIDTH || y < 0 || y >= MAP_HEIGHT) return 1;
 	else return 0;
 }
@@ -330,7 +324,6 @@ void init_game() {
 	wait_input('s');
 	message_end();
 }
-
 void game_start() {
 	init_game();
 
@@ -378,7 +371,7 @@ void game_start() {
 			delete_end();
 		}
 
-		if (out_map(head->x, head->y) || snake[head->y][head->x] == 1) {
+		if (is_out(head->x, head->y) || snake[head->y][head->x] == 1) {
 			draw_frame();
 			draw_info();
 			if (game_over()) init_game();
@@ -388,7 +381,6 @@ void game_start() {
 		Sleep(MAX_SPEED - speed);
 	}
 }
-
 int game_over() {
 
 	for (int i = 0; i < 3; i++) {
