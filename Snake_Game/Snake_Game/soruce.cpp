@@ -4,29 +4,20 @@
 #include <conio.h>
 #include<time.h>
 
-#pragma region Key Input
+#pragma region Define Const
 
 #define UP 72
 #define DOWN 80
 #define LEFT 75
 #define RIGHT 77
-
-#define W 119
-#define S 115
-#define A 97
-#define D 100
-
 #define ESC 27
-
-#pragma endregion
-
-#pragma region Const
 
 #define GAP_X 4
 #define GAP_Y 2
 #define MAP_WIDTH 25
 #define MAP_HEIGHT 25
 #define MAX_LENGTH 20
+#define MAX_SPEED 100
 
 #pragma endregion
 
@@ -62,7 +53,7 @@ typedef struct ListNode {
 
 #pragma endregion
 
-#pragma region Function Prototype
+#pragma region Function Declaration
 
 void set_color(int back_color, int font_color);
 void gotoxy(int x, int y);
@@ -74,7 +65,7 @@ void setup();
 
 void init_game();
 
-void draw_window();
+void draw_frame();
 void draw_map();
 void draw_info();
 
@@ -92,60 +83,35 @@ int out_map(int x, int y);
 
 #pragma endregion 
 
+#pragma region Global Variable
+
 int map[MAP_HEIGHT][MAP_WIDTH];
 int snake[MAP_HEIGHT][MAP_WIDTH];
 int fruit[MAP_HEIGHT][MAP_WIDTH];
 
-int direction = RIGHT;
-int max_speed = 100;
-int speed = 10;
+int direction;
+int speed;
 int length;
 int score;
-int max_score;
+int high_score;
 
 ListNode* head;
 ListNode* tail;
 
+#pragma endregion
+
 int main() {
 	setup();
-
 	game_start();
 
 	return 0;
 }
 
-void set_color(int back_color, int font_color) {
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), back_color * 16 + font_color);
-}
-
-void gotoxy(int x, int y) {
-	COORD pos = { x + GAP_X + 2, y + GAP_Y + 4 };
-	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
-}
-
 int input_key() {
 	int input = _getch();
-
 	if (input == 224) { input = _getch(); return input; }
-	else if (input == W) return UP;
-	else if (input == S) return DOWN;
-	else if (input == A) return LEFT;
-	else if (input == D) return RIGHT;
 	else return input;
 }
-
-void set_block(int x, int y, int color) {
-	set_color(color, WHITE);
-	gotoxy(x * 2, +y);
-	printf("  ");
-	set_color(BLACK, WHITE);
-}
-
-void delete_block(int x, int y) {
-	if (map[x][y] == 0) set_block(x, y, GREEN);
-	else set_block(x, y, D_GREEN);
-}
-
 void setup() {
 	//커서 숨기기
 	CONSOLE_CURSOR_INFO cursorInfo = { 0, };
@@ -160,8 +126,25 @@ void setup() {
 	getch();
 	system("cls");
 }
+void gotoxy(int x, int y) {
+	COORD pos = { x + GAP_X + 2, y + GAP_Y + 4 };
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), pos);
+}
+void set_color(int back_color, int font_color) {
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), back_color * 16 + font_color);
+}
 
-void draw_window() {
+void set_block(int x, int y, int color) {
+	set_color(color, WHITE);
+	gotoxy(x * 2, +y);
+	printf("  ");
+	set_color(BLACK, WHITE);
+}
+void delete_block(int x, int y) {
+	if (map[x][y] == 0) set_block(x, y, GREEN);
+	else set_block(x, y, D_GREEN);
+} 
+void draw_frame() {
 	for (int x = -1, y = -4; x < MAP_WIDTH + 1; x++) {
 		set_block(x, y, D_GRAY);
 		set_block(x, y + 1, D_GRAY);
@@ -183,7 +166,6 @@ void draw_map() {
 		}
 	}
 }
-
 void draw_info() {
 	int x = 0;
 	int y = -3;
@@ -196,21 +178,31 @@ void draw_info() {
 	y = MAP_HEIGHT - 7;
 
 	set_color(BLACK, WHITE);
-	gotoxy(x, y);     printf("High Socre : %d", max_score);
-	gotoxy(x, y + 1); printf("Speed      : %d", speed);
+	gotoxy(x, y);     printf("High Socre    : %d", high_score);
+	gotoxy(x, y + 1); printf("Current Speed : %d", speed);
 
-	gotoxy(x, y + 3); printf("Move Up    : W or ↑");
-	gotoxy(x, y + 4); printf("Move Down  : S or ↓");
-	gotoxy(x, y + 5); printf("Move Left  : A or ←");
-	gotoxy(x, y + 6); printf("Move Right : D or →");
-	gotoxy(x, y + 7); printf("Game Stop	 : ESC");
+	gotoxy(x, y + 3); printf("Snake Move    :  ←, →, ↑, ↓");
+	gotoxy(x, y + 6); printf("Game Stop     :  ESC");
 }
+void draw_window() {
+	
+}
+
+
+
+
+
 
 void init_game() {
 	head = tail = NULL;
 	srand(time(NULL));
 	direction = RIGHT;
 	score = 0;
+
+	length = 0;
+	speed = 10;
+
+	
 	for (int y = 0; y < MAP_HEIGHT; y++) {
 		for (int x = 0; x < MAP_WIDTH; x++) {
 			if ((x + y) % 2 != 0) map[y][x] = 1;
@@ -218,10 +210,7 @@ void init_game() {
 		}
 	}
 
-	length = 0;
-	speed = 10;
-
-	draw_window();
+	draw_frame();
 	draw_map();
 	draw_info();
 
@@ -234,7 +223,7 @@ void init_game() {
 
 	set_color(BLACK, GREEN);
 	gotoxy(-2, MAP_HEIGHT + 2);
-	printf("시작하려면 아무 키나 누르십시오 . . .");
+	printf("press 's' to srart");
 	_getch();
 	set_color(BLACK, WHITE);
 	gotoxy(-2, MAP_HEIGHT + 2);
@@ -288,17 +277,18 @@ void game_start() {
 				delete_end();
 			}
 
+			if (score > high_score) high_score = score;
 			create_fruit();
 			draw_info();
 
-			if (score % 900 == 0 && score != 0 && speed < max_speed) speed += 10;
+			if (score % 900 == 0 && score != 0 && speed < MAX_SPEED) speed += 10;
 		}
 		else {
 			delete_end();
 		}
 
 		if (out_map(head->x, head->y)) {
-			draw_window();
+			draw_frame();
 			draw_info();
 
 			if (!game_over()) break;
@@ -312,12 +302,11 @@ void game_start() {
 
 	
 
-		Sleep(max_speed - speed);
+		Sleep(MAX_SPEED - speed);
 	}
 }
 
 int game_over() {
-	if (score > max_score) max_score = score;
 
 	while (true) {
 		char result;
