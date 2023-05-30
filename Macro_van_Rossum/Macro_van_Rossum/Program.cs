@@ -6,7 +6,7 @@ namespace Macro_van_Rossum
         static void Main()
         {
             ApplicationConfiguration.Initialize();
-            Application.Run(new Macro());
+            Application.Run(new Form1());
         }
     }
 }

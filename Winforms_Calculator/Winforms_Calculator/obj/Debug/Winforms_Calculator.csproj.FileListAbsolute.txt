@@ -1,0 +1,11 @@
+C:\GitHub\simple-implementation\Winforms_Calculator\Winforms_Calculator\bin\Debug\Winforms_Calculator.exe.config
+C:\GitHub\simple-implementation\Winforms_Calculator\Winforms_Calculator\bin\Debug\Winforms_Calculator.exe
+C:\GitHub\simple-implementation\Winforms_Calculator\Winforms_Calculator\bin\Debug\Winforms_Calculator.pdb
+C:\GitHub\simple-implementation\Winforms_Calculator\Winforms_Calculator\obj\Debug\Winforms_Calculator.csproj.AssemblyReference.cache
+C:\GitHub\simple-implementation\Winforms_Calculator\Winforms_Calculator\obj\Debug\Winforms_Calculator.csproj.SuggestedBindingRedirects.cache
+C:\GitHub\simple-implementation\Winforms_Calculator\Winforms_Calculator\obj\Debug\Winforms_Calculator.Form1.resources
+C:\GitHub\simple-implementation\Winforms_Calculator\Winforms_Calculator\obj\Debug\Winforms_Calculator.Properties.Resources.resources
+C:\GitHub\simple-implementation\Winforms_Calculator\Winforms_Calculator\obj\Debug\Winforms_Calculator.csproj.GenerateResource.cache
+C:\GitHub\simple-implementation\Winforms_Calculator\Winforms_Calculator\obj\Debug\Winforms_Calculator.csproj.CoreCompileInputs.cache
+C:\GitHub\simple-implementation\Winforms_Calculator\Winforms_Calculator\obj\Debug\Winforms_Calculator.exe
+C:\GitHub\simple-implementation\Winforms_Calculator\Winforms_Calculator\obj\Debug\Winforms_Calculator.pdb

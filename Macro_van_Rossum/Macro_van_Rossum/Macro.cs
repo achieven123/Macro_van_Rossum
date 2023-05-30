@@ -66,12 +66,12 @@ namespace Macro_van_Rossum
             if (SettingButton.Text == "설정")
             {
                 SettingButton.Text = "닫기";
-                ResizeForm(660, 10, 1, 0);
+                ResizeForm(518, 10, 1, 0);
             }
             else
             {
                 SettingButton.Text = "설정";
-                ResizeForm(400, 10, 1, 1);
+                ResizeForm(315, 10, 1, 1);
             }
         }
 
