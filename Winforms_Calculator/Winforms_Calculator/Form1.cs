@@ -22,7 +22,7 @@ namespace Winforms_Calculator
             if (isClear == true)
             {
                 numBox2.Text = btn.Text;
-                isClear = false;
+                if (numBox2.Text != "0") isClear = false;
             }
             else
             {
@@ -47,6 +47,38 @@ namespace Winforms_Calculator
             numBox1.Text = "";
             numBox2.Text = "0";
             isClear = true;
+        }
+
+        //Operator Button Click Event
+        private void operator_Click(object sender, EventArgs e)
+        {
+            string name = ((System.Windows.Forms.Button)sender).Name;
+
+            switch (name)
+            {
+                case "plus":
+                    numBox1.Text += numBox2.Text;
+                    numBox1.Text += "+";
+                    break;
+                case "minus":
+                    numBox1.Text += numBox2.Text;
+                    numBox1.Text += "-";
+                    break;
+                case "product":
+                    numBox1.Text += numBox2.Text;
+                    numBox1.Text += "x";
+                    break;
+                case "divide":
+                    numBox1.Text += numBox2.Text;
+                    numBox1.Text += "/";
+                    break;
+                case "remainder":
+                    numBox1.Text += numBox2.Text;
+                    numBox1.Text += "%";
+                    break;
+                case "negate":
+                    break;
+            }
         }
     }
 }
