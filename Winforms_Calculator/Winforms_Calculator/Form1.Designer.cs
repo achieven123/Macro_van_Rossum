@@ -1,4 +1,4 @@
-﻿namespace Winforms_Calculator
+﻿ namespace Winforms_Calculator
 {
     partial class Form1
     {
@@ -313,7 +313,7 @@
             this.numBox1.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.numBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.numBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.numBox1.Font = new System.Drawing.Font("굴림", 10F, System.Drawing.FontStyle.Bold);
+            this.numBox1.Font = new System.Drawing.Font("굴림", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.numBox1.ForeColor = System.Drawing.SystemColors.WindowFrame;
             this.numBox1.Location = new System.Drawing.Point(17, 19);
             this.numBox1.Margin = new System.Windows.Forms.Padding(17, 19, 17, 0);

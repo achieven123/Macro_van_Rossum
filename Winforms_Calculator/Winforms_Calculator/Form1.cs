@@ -9,8 +9,9 @@ namespace Winforms_Calculator
     public partial class Form1 : Form
     {
         bool isClear = true;
+        bool isOperand = false;
         double result = 0;
-        char op = '0';
+        string op = "";
 
         public Form1()
         {
@@ -24,7 +25,8 @@ namespace Winforms_Calculator
             {
                 numBox2.Text = ((Button)sender).Text;
 
-                if (numBox2.Text != "0") //0이 아닌 값이 들어왔을 때만 입력받기
+                //0이 아닌 값이 들어왔을 때만 입력받기
+                if (numBox2.Text != "0")
                 {
                     isClear = false;
                 }
@@ -44,7 +46,6 @@ namespace Winforms_Calculator
             {
                 numBox2.Text = "0";
                 isClear = true;
-                result = 0;
             }
         }
 
@@ -60,26 +61,35 @@ namespace Winforms_Calculator
         //Operator Button Click Event
         private void operator_Click(object sender, EventArgs e)
         {
-            op = ((Button)sender).Text[0];
-             MessageBox.Show(op.ToString());
-
-            if (isClear == false)
+            if (isClear == false && op != "") //피연산자와 전에 입력된 연산자가 있을 경우 연산 수행
             {
-                //result += double.Parse(numBox2.Text);
-                if (op == '+')
+                switch (op)
                 {
-                    MessageBox.Show("같음");
-                    result += double.Parse(numBox2.Text);
+                    case "＋":
+                        result += double.Parse(numBox2.Text);
+                        break;
+                    case "－":
+                        result -= double.Parse(numBox2.Text);
+                        break;
+                    case "×":
+                        result *= double.Parse(numBox2.Text);
+                        break;
+                    case "÷":
+                        result /= double.Parse(numBox2.Text);
+                        break;
+                    case "%":
+                        result %= double.Parse(numBox2.Text);
+                        break;
                 }
-                //if (op == "-") result -= double.Parse(numBox2.Text);
-                //if (op == "x") result *= double.Parse(numBox2.Text);
-                //if (op == "÷") result /= double.Parse(numBox2.Text);
-                //if (op == "%") result %= double.Parse(numBox2.Text);
+            }
+            else
+            {
+                result = double.Parse(numBox2.Text);
             }
 
+            op = ((Button)sender).Text;
             numBox1.Text = result.ToString() + op;
             numBox2.Text = result.ToString();
-
             isClear = true;
         }
     }
