@@ -98,7 +98,7 @@ namespace Winforms_Calculator
                     }
                     catch (System.DivideByZeroException)
                     {
-                        numBox2.Text = "N/A";
+                        numBox2.Text = "N/A"; //0으로 나눌 때 예외처리
                     }
                     break;
                 case "1/x²":
@@ -109,7 +109,7 @@ namespace Winforms_Calculator
                     }
                     catch (System.DivideByZeroException)
                     {
-                        numBox2.Text = "N/A";
+                        numBox2.Text = "N/A"; //0으로 나눌 때 예외처리
                     }
                     break;
                 case "²√x":
@@ -178,7 +178,7 @@ namespace Winforms_Calculator
                         }
                         catch (System.DivideByZeroException)
                         {
-                            numBox2.Text = "N/A";
+                            numBox2.Text = "N/A"; //0으로 나눌 때 예외처리
                         }
                         break;
                     case "%":
@@ -194,6 +194,7 @@ namespace Winforms_Calculator
             }
         }
 
+        //Memory Button Click Event
         private void memory_Click(object sender, EventArgs e)
         {
             decimal num = decimal.Parse(numBox2.Text);
