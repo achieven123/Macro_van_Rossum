@@ -143,6 +143,9 @@
     <ClCompile Include="02_linked_list.cpp" />
     <ClCompile Include="03_polynomial.cpp" />
     <ClCompile Include="04_circular_linked_list.cpp" />
+    <ClCompile Include="05_doubly_linked_list.cpp" />
+    <ClCompile Include="06_stack_linked_list.cpp" />
+    <ClCompile Include="07_queue_linked_list.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
