@@ -1,2 +1,1 @@
-# simple-implementation
-연습하면서 여러가지 구현한 것들
+# 짧게 개발한 포르젝트 모음
