@@ -1,0 +1,171 @@
+* {
+	font-family: 'Noto Sans KR', sans-serif;
+	margin: 0;
+}
+
+/* Gradation */
+header {
+	position: relative;
+	background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-size: 400% 400%;
+	animation: gradient 15s ease infinite;
+	height: 100vh;
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+
+	50% {
+		background-position: 100% 50%;
+	}
+
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+/* Title */
+header h1 a {
+	position: absolute;
+	top: 30%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-decoration: none;
+	text-align: center;
+	color: white;
+	border: 3px solid white;
+	padding: 10px 30px;
+	font-size: 80px;
+	font-weight: 900;
+}
+
+/* Navigation Bar */
+nav {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding-top: 50vh;
+}
+
+nav ul {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	list-style-type: none;
+	padding: 0;
+}
+
+nav li {
+	margin: 10px 0;
+}
+
+nav a {
+	display: inline-block;
+	text-decoration: none;
+	color: white;
+	font-size: 30px;
+	font-weight: 500;
+}
+
+nav a:hover::before {
+	content: "> ";
+}
+
+nav a:hover::after {
+	content: " <";
+}
+
+/* Sections */
+section {
+	width: 70%;
+	height: 80vh;
+	margin: 3% 10% 5% 10%;
+	padding: 10px 80px;
+	background-color: #e9e9e9;
+	border-radius: 12px;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 15%);
+}
+
+section h2 {
+	margin: 30px 0;
+	font-size: 50px;
+	font-weight: 500;
+}
+
+/* Section 01 */
+#section-01 p {
+	text-align: justify;
+}
+
+/* Section 02 */
+.card-colections {
+	display: flex;
+	padding: 25px 0px;
+	list-style: none;
+	overflow-x: scroll;
+	scroll-snap-type: x mandatory;
+}
+
+.card {
+	display: flex;
+	flex-direction: column;
+	padding: 20px;
+	background-color: white;
+	border-radius: 12px;
+	scroll-snap-align: start;
+	max-width: 85%;
+	margin: 0 10px;
+}
+
+.card:hover {
+	background-color: #E2E2E2;
+}
+
+.card-img {
+	width: 250px;
+	height: 250px;
+}
+
+.card-title {
+	padding: 5px 15px;
+	position: relative;
+	font-size: 22px;
+}
+
+.card-description {
+	padding: 6px 15px 10px;
+	position: relative;
+}
+
+/* Section 03 */
+#section-03 table {
+	border-collapse: collapse;
+	margin: 25px 0;
+	min-width: 400px;
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+#section-03 thead tr {
+	background-color: #009879;
+	border-radius: 12px;
+	color: #ffffff;
+	text-align: left;
+}
+
+#section-03 th {
+	text-align: center;
+}
+
+#section-03 th, #section-03 td {
+    padding: 12px 15px;
+}
+
+/* Media Query */
+@media (max-width: 1500px) {
+	header h1 a {
+		font-size: 60px;
+		text-align: center;
+	}
+}
